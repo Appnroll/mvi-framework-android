@@ -10,15 +10,14 @@ abstract class MviBaseActivity<
         ViewStateType: MviViewState<ResultType>,
         ViewModelType: MviViewModel<ActionType, ResultType, ViewStateType>>(
     private val viewModelClass: Class<ViewModelType>
-): AppCompatActivity() {
+): AppCompatActivity(), MviControllerCallback<ActionType, ResultType, ViewStateType> {
 
     protected val mviController by lazy {
         MviController(
             ViewModelProviders.of(this),
             javaClass.name,
             lifecycle,
-            ::render,
-            ::initialAction
+            this
         )
     }
 
@@ -32,14 +31,4 @@ abstract class MviBaseActivity<
         mviController.saveLastViewState(outState)
         super.onSaveInstanceState(outState)
     }
-
-    /**
-     * Sends this action right after subscription to viewStates observer
-     */
-    open fun initialAction(lastViewState: ViewStateType?): ActionType? = null
-
-    /**
-     * Update UI based on ViewState
-     */
-    abstract fun render(viewState: ViewStateType)
 }

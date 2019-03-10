@@ -13,8 +13,7 @@ class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     private val viewModelProvider: ViewModelProvider,
     private val viewStateParcelKey: String,
     private val lifecycle: Lifecycle,
-    private val render: (VS) -> Unit,
-    private val initialAction: ((VS?) -> A?)
+    private val callback: MviControllerCallback<A, R, VS>
 ): LifecycleObserver {
 
     var viewState: VS? = null
@@ -47,7 +46,7 @@ class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
         viewModel.getViewStatesObservable().subscribe(this::render).run { disposable.add(this) }
         viewModel.processActions(actionsRelay)
 
-        initialAction(viewState)?.let { action -> accept(action) }
+        callback.initialAction(viewState)?.let { action -> accept(action) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
@@ -57,9 +56,22 @@ class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     }
 
     private fun render(viewState: VS) {
-        render.invoke(viewState)
+        callback.render(viewState)
         if (viewState.isSavable()) {
             this.viewState = viewState
         }
     }
+}
+
+interface MviControllerCallback<A: MviAction, R: MviResult, VS: MviViewState<R>> {
+
+    /**
+     * Sends this action right after subscription to viewStates observer
+     */
+    fun initialAction(lastViewState: VS?): A? = null
+
+    /**
+     * Update UI based on ViewState
+     */
+    fun render(viewState: VS)
 }

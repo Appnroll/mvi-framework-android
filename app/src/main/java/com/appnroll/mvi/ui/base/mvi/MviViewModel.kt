@@ -32,7 +32,7 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
 
     fun getViewStatesObservable() =
         viewStatesObservable ?: throw Exception(
-            "You need to invoke initViewStatesObservable(lastViewState, alwaysInitWithSavedViewState) " +
+            "You need to invoke initViewStatesObservable(lastViewState) " +
                     "in onCreate() method of Your Activity or onViewCreated() method of Your Fragment"
         )
 
