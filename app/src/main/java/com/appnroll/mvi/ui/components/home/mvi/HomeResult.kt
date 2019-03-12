@@ -6,9 +6,9 @@ import com.appnroll.mvi.ui.model.Task
 
 sealed class HomeResult: MviResult {
 
-    object InProgress: HomeResult()
+    object InProgressResult: HomeResult()
 
-    data class Error(val t: Throwable): HomeResult()
+    data class ErrorResult(val t: Throwable): HomeResult()
 
     data class LoadTasksResult(val tasks: List<Task>): HomeResult()
 

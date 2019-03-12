@@ -24,8 +24,8 @@ class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinCo
 
     private val loadTasksActionProcessor = createActionProcessor<LoadTasksAction, HomeResult>(
         schedulerProvider,
-        { InProgress },
-        { t -> Error(t) }
+        { InProgressResult },
+        { t -> ErrorResult(t) }
     ) {
         onNextSafe(LoadTasksResult(taskRepository.getAllTasks()))
         onCompleteSafe()
@@ -33,8 +33,8 @@ class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinCo
 
     private val addTaskActionProcessor = createActionProcessor<AddTaskAction, HomeResult>(
         schedulerProvider,
-        { InProgress },
-        { t -> Error(t) }
+        { InProgressResult },
+        { t -> ErrorResult(t) }
     ) { action ->
         val newTask = taskRepository.addTask(Task(0, action.taskContent, false))
         onNextSafe(AddTaskResult(newTask))
@@ -43,12 +43,12 @@ class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinCo
 
     private val updateTaskActionProcessor = createActionProcessor<UpdateTaskAction, HomeResult>(
         schedulerProvider,
-        { InProgress },
-        { t -> Error(t) }
+        { InProgressResult },
+        { t -> ErrorResult(t) }
     ) { action ->
         val task = taskRepository.getTask(action.taskId)?.copy(isDone = action.isDone)
         val updateTaskResult = if (task == null) {
-            Error(Exception("Task with id ${action.taskId} not found in DB"))
+            ErrorResult(Exception("Task with id ${action.taskId} not found in DB"))
         } else {
             taskRepository.updateTask(task)
             UpdateTaskResult(task)
@@ -59,8 +59,8 @@ class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinCo
 
     private val deletedCompletedTasksActionProcessor = createActionProcessor<DeleteCompletedTasksAction, HomeResult>(
         schedulerProvider,
-        { InProgress},
-        { t -> Error(t) }
+        { InProgressResult},
+        { t -> ErrorResult(t) }
     ) {
         val doneTasks = taskRepository.getAllDoneTasks()
         taskRepository.delete(doneTasks)

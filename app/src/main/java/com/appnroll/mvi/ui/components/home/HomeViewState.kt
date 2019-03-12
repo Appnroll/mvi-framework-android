@@ -23,8 +23,8 @@ data class HomeViewState(
 
     override fun reduce(result: HomeResult): HomeViewState {
         return when (result) {
-            is InProgress -> result.reduce()
-            is Error -> result.reduce()
+            is InProgressResult -> result.reduce()
+            is ErrorResult -> result.reduce()
             is LoadTasksResult -> result.reduce()
             is AddTaskResult -> result.reduce()
             is UpdateTaskResult -> result.reduce()
@@ -32,11 +32,11 @@ data class HomeViewState(
         }
     }
 
-    private fun InProgress.reduce() = this@HomeViewState.copy(
+    private fun InProgressResult.reduce() = this@HomeViewState.copy(
         inProgress = true
     )
 
-    private fun Error.reduce() = this@HomeViewState.copy(
+    private fun ErrorResult.reduce() = this@HomeViewState.copy(
         inProgress = false,
         error = ViewStateEvent(t)
     )
