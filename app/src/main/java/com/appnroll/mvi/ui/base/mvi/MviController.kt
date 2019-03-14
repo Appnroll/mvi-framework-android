@@ -42,7 +42,7 @@ class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
+    private fun onStart() {
         viewModel.getViewStatesObservable().subscribe(this::render).run { disposable.add(this) }
         viewModel.processActions(actionsRelay)
 
@@ -50,7 +50,7 @@ class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onStop() {
+    private fun onStop() {
         disposable.clear()
         viewModel.clear()
     }
