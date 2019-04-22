@@ -1,5 +1,6 @@
 package com.appnroll.mvi.ui.base.mvi
 
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
@@ -41,6 +42,10 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
 
     fun accept(action: A) {
         actionSource.accept(action)
+    }
+
+    open fun onLifecycleAttached(lifecycle: Lifecycle) {
+        // do nothing - can be override in subclasses
     }
 
     abstract fun initialAction(): A?

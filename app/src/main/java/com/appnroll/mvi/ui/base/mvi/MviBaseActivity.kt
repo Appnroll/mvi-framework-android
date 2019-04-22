@@ -21,6 +21,9 @@ abstract class MviBaseActivity<
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
+    val viewModel: ViewModelType by lazy { mviController.viewModel as ViewModelType }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mviController.initViewModel(viewModelClass)

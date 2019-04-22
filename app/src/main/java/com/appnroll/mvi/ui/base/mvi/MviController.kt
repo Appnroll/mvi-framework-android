@@ -21,6 +21,7 @@ class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
 
     fun initViewModel(viewModelClass: Class<out MviViewModel<A, R, VS>>) {
         viewModel = viewModelProvider.get(viewModelClass)
+        viewModel.onLifecycleAttached(lifecycle)
         lifecycle.addObserver(this)
     }
 
