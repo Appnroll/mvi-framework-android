@@ -13,7 +13,7 @@ abstract class MviBaseFragment<
     private val viewModelClass: Class<ViewModelType>
 ): Fragment(), MviControllerCallback<ActionType, ResultType, ViewStateType> {
 
-    protected val mviController by lazy {
+    private val mviController by lazy {
         MviController(
             ViewModelProviders.of(this),
             javaClass.name,
@@ -21,6 +21,9 @@ abstract class MviBaseFragment<
             this
         )
     }
+
+    @Suppress("UNCHECKED_CAST")
+    val viewModel: ViewModelType by lazy { mviController.viewModel as ViewModelType }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -5,7 +5,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
-import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.disposables.CompositeDisposable
 
 
@@ -16,11 +15,8 @@ class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     private val callback: MviControllerCallback<A, R, VS>
 ): LifecycleObserver {
 
-    var viewState: VS? = null
+    lateinit var viewModel: MviViewModel<A, R, VS>
 
-    private lateinit var viewModel: MviViewModel<A, R, VS>
-
-    private val actionsRelay = PublishRelay.create<A>()
     private var disposable = CompositeDisposable()
 
     fun initViewModel(viewModelClass: Class<out MviViewModel<A, R, VS>>) {
@@ -29,46 +25,30 @@ class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     }
 
     fun initViewStatesObservable(savedInstanceState: Bundle?) {
-        val lastViewState = savedInstanceState?.getParcelable(viewStateParcelKey) as? VS? ?: viewState
+        val lastViewState = savedInstanceState?.getParcelable(viewStateParcelKey) as? VS? ?: viewModel.viewState
         viewModel.initViewStatesObservable(lastViewState)
     }
 
-    fun accept(action: A) {
-        actionsRelay.accept(action)
-    }
-
     fun saveLastViewState(outState: Bundle) {
-        outState.putParcelable(viewStateParcelKey, viewState)
+        outState.putParcelable(viewStateParcelKey, viewModel.viewState)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onStart() {
         viewModel.getViewStatesObservable().subscribe(this::render).run { disposable.add(this) }
-        viewModel.processActions(actionsRelay)
-
-        callback.initialAction(viewState)?.let { action -> accept(action) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private fun onStop() {
         disposable.clear()
-        viewModel.clear()
     }
 
     private fun render(viewState: VS) {
         callback.render(viewState)
-        if (viewState.isSavable()) {
-            this.viewState = viewState
-        }
     }
 }
 
 interface MviControllerCallback<A: MviAction, R: MviResult, VS: MviViewState<R>> {
-
-    /**
-     * Sends this action right after subscription to viewStates observer
-     */
-    fun initialAction(lastViewState: VS?): A? = null
 
     /**
      * Update UI based on ViewState

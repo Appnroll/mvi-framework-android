@@ -4,15 +4,14 @@ import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
-import io.reactivex.disposables.CompositeDisposable
 
 
 abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     private val actionProcessor: ObservableTransformer<A, R>,
-    private val defaultViewState: VS
+    defaultViewState: VS
 ): ViewModel() {
 
-    private var disposables: CompositeDisposable = CompositeDisposable()
+    var viewState: VS = defaultViewState
 
     private val actionSource = PublishRelay.create<A>()
 
@@ -23,10 +22,14 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
         if (viewStatesObservable == null) {
             viewStatesObservable = actionSource
                 .compose(actionProcessor)
-                .scan<VS>(savedViewState ?: defaultViewState) { viewState: VS, result -> viewState.reduce(result) as VS }
+                .scan<VS>(savedViewState ?: viewState) { viewState: VS, result -> viewState.reduce(result) as VS }
+                .doOnNext(::saveNewViewState)
                 .distinctUntilChanged()
                 .replay(1)
                 .autoConnect(0)
+                .doOnSubscribe {
+                    initialAction()?.let { action -> accept(action) }
+                }
         }
     }
 
@@ -36,11 +39,15 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
                     "in onCreate() method of Your Activity or onViewCreated() method of Your Fragment"
         )
 
-    fun processActions(actionsObservable: Observable<A>) {
-        actionsObservable.subscribe(actionSource).run { disposables.add(this) }
+    fun accept(action: A) {
+        actionSource.accept(action)
     }
 
-    fun clear() {
-        disposables.clear()
+    abstract fun initialAction(): A?
+
+    private fun saveNewViewState(newViewState: VS) {
+        if (newViewState.isSavable()) {
+            viewState = newViewState
+        }
     }
 }

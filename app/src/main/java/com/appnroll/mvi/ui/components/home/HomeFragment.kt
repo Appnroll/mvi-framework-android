@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.appnroll.mvi.R
 import com.appnroll.mvi.ui.base.mvi.MviBaseFragment
 import com.appnroll.mvi.ui.components.home.mvi.HomeAction
-import com.appnroll.mvi.ui.components.home.mvi.HomeAction.*
 import com.appnroll.mvi.ui.components.home.mvi.HomeResult
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -31,22 +30,13 @@ class HomeFragment: MviBaseFragment<HomeAction, HomeResult, HomeViewState, HomeV
 
         addTaskButton.setOnClickListener {
             newTaskInput.text.toString().let {
-                if (!it.isBlank()) {
-                    mviController.accept(AddTaskAction(it))
-                }
+                viewModel.addTask(it)
             }
         }
 
         deleteCompletedTasksButton.setOnClickListener {
-            mviController.accept(DeleteCompletedTasksAction)
+            viewModel.deleteCompletedTasks()
         }
-    }
-
-    override fun initialAction(lastViewState: HomeViewState?): HomeAction? {
-        if (lastViewState?.tasks == null) {
-            return LoadTasksAction
-        }
-        return null
     }
 
     override fun render(viewState: HomeViewState) {
@@ -71,7 +61,7 @@ class HomeFragment: MviBaseFragment<HomeAction, HomeResult, HomeViewState, HomeV
 
     private fun initTasksRecyclerView() {
         tasksAdapter.onCheckChangeListener = { taskId, isChecked ->
-            mviController.accept(UpdateTaskAction(taskId, isChecked))
+            viewModel.updateTask(taskId, isChecked)
         }
         tasksRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         tasksRecyclerView.overScrollMode = View.OVER_SCROLL_NEVER
