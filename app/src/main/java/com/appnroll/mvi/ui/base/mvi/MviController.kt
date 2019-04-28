@@ -37,11 +37,13 @@ class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onStart() {
         viewModel.getViewStatesObservable().subscribe(this::render).run { disposable.add(this) }
+        viewModel.startProcessingActions()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private fun onStop() {
         disposable.clear()
+        viewModel.stopProcessingActions()
     }
 
     private fun render(viewState: VS) {

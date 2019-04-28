@@ -7,7 +7,7 @@ import io.reactivex.ObservableTransformer
 
 
 abstract class MviActionsProcessor<A: MviAction, R: MviResult>: ObservableTransformer<A, R> {
-
+    
     final override fun apply(actions: Observable<A>): ObservableSource<R> {
         return actions.publish { shared ->
             Observable.merge(
@@ -15,16 +15,16 @@ abstract class MviActionsProcessor<A: MviAction, R: MviResult>: ObservableTransf
             )
         }
     }
-
+    
     abstract fun getActionProcessors(shared: Observable<A>): List<Observable<R>>
-
+    
     inline fun <reified A>Observable<in A>.connect(processor: ObservableTransformer<A, R>): Observable<R> {
         return ofType(A::class.java).compose(processor)
     }
 }
 
 fun <A: MviAction, R: MviResult>createActionProcessor(
-    schedulerProvider: SchedulerProvider,
+    schedulersProvider: SchedulersProvider? = null,
     initialResult: ((a: A) -> R?)? = null,
     onErrorResult: ((t: Throwable) -> R)? = null,
     doStuff: ObservableEmitter<R>.(action: A) -> Unit
@@ -34,13 +34,16 @@ fun <A: MviAction, R: MviResult>createActionProcessor(
             var observable = asObservable<R> {
                 doStuff(action)
             }
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-
+            schedulersProvider?.let {
+                observable = observable
+                    .subscribeOn(schedulersProvider.subscriptionScheduler())
+                    .observeOn(schedulersProvider.observationScheduler())
+            }
+            
             if (onErrorResult != null) {
                 observable = observable.onErrorReturn { t -> onErrorResult.invoke(t) }
             }
-
+            
             if (initialResult != null) {
                 observable = observable.startWith(initialResult.invoke(action))
             }

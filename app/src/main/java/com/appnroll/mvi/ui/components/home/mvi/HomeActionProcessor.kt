@@ -12,7 +12,7 @@ import org.koin.standalone.inject
 
 class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinComponent {
 
-    private val schedulerProvider: SchedulerProvider by inject()
+    private val schedulersProvider: SchedulersProvider by inject()
     private val taskRepository: TaskRepository by inject()
 
     override fun getActionProcessors(shared: Observable<HomeAction>) = listOf(
@@ -23,7 +23,7 @@ class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinCo
     )
 
     private val loadTasksActionProcessor = createActionProcessor<LoadTasksAction, HomeResult>(
-        schedulerProvider,
+        schedulersProvider,
         { InProgressResult },
         { t -> ErrorResult(t) }
     ) {
@@ -32,7 +32,7 @@ class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinCo
     }
 
     private val addTaskActionProcessor = createActionProcessor<AddTaskAction, HomeResult>(
-        schedulerProvider,
+        schedulersProvider,
         { InProgressResult },
         { t -> ErrorResult(t) }
     ) { action ->
@@ -42,7 +42,7 @@ class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinCo
     }
 
     private val updateTaskActionProcessor = createActionProcessor<UpdateTaskAction, HomeResult>(
-        schedulerProvider,
+        schedulersProvider,
         { InProgressResult },
         { t -> ErrorResult(t) }
     ) { action ->
@@ -58,7 +58,7 @@ class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinCo
     }
 
     private val deletedCompletedTasksActionProcessor = createActionProcessor<DeleteCompletedTasksAction, HomeResult>(
-        schedulerProvider,
+        schedulersProvider,
         { InProgressResult},
         { t -> ErrorResult(t) }
     ) {
