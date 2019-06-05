@@ -2,7 +2,7 @@ package com.appnroll.mvi.ui.components.home
 
 import com.appnroll.mvi.ui.base.mvi.MviViewState
 import com.appnroll.mvi.ui.base.mvi.ViewStateEmptyEvent
-import com.appnroll.mvi.ui.base.mvi.ViewStateEvent
+import com.appnroll.mvi.ui.base.mvi.ViewStateErrorEvent
 import com.appnroll.mvi.ui.components.home.mvi.HomeResult
 import com.appnroll.mvi.ui.components.home.mvi.HomeResult.*
 import com.appnroll.mvi.ui.model.Task
@@ -13,7 +13,7 @@ data class HomeViewState(
     val inProgress: Boolean,
     val tasks: List<Task>?,
     val newTaskAdded: ViewStateEmptyEvent?,
-    val error: ViewStateEvent<Throwable>?
+    val error: ViewStateErrorEvent?
 ): MviViewState<HomeResult> {
 
     companion object {
@@ -38,7 +38,7 @@ data class HomeViewState(
 
     private fun ErrorResult.reduce() = this@HomeViewState.copy(
         inProgress = false,
-        error = ViewStateEvent(t)
+        error = ViewStateErrorEvent(t)
     )
 
     private fun LoadTasksResult.reduce() = this@HomeViewState.copy(

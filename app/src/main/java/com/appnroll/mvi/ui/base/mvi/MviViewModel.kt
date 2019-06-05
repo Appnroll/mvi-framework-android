@@ -32,9 +32,6 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
                 .distinctUntilChanged()
                 .replay(1)
                 .autoConnect(0)
-                .doOnSubscribe {
-                    initialAction()?.let { action -> accept(action) }
-                }
         }
     }
 
