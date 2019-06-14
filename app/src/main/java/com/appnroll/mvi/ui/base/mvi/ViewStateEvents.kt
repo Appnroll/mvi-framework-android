@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 @Parcelize
 data class ViewStateEvent<T: Parcelable>(
     val payload: T
-): SingleEvent<T>({ payload }) {
+): SingleEvent<T>(payload) {
     
     override fun equals(other: Any?): Boolean {
         return super.equals(other)
@@ -25,7 +25,7 @@ data class ViewStateEvent<T: Parcelable>(
 @Parcelize
 data class ViewStateErrorEvent(
     val payload: Throwable
-): SingleEvent<Throwable>({ payload }) {
+): SingleEvent<Throwable>(payload) {
     
     override fun equals(other: Any?): Boolean {
         return super.equals(other)
@@ -40,7 +40,7 @@ data class ViewStateErrorEvent(
 
 
 @Parcelize
-class ViewStateEmptyEvent: SingleEvent<Unit>({ Unit }) {
+class ViewStateEmptyEvent: SingleEvent<Unit>(Unit) {
     
     override fun equals(other: Any?): Boolean {
         return super.equals(other)
@@ -53,7 +53,7 @@ class ViewStateEmptyEvent: SingleEvent<Unit>({ Unit }) {
 
 
 abstract class SingleEvent<T>(
-    val argument: () -> T,
+    val argument: T,
     protected val isConsumed: AtomicBoolean = AtomicBoolean(false)
 ): Parcelable {
     
@@ -61,7 +61,7 @@ abstract class SingleEvent<T>(
     
     fun consume(action: (T) -> Unit) {
         if (!isConsumed(true)) {
-            action.invoke(argument())
+            action.invoke(argument)
         }
     }
 }
