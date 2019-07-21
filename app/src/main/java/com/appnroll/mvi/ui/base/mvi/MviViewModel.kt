@@ -11,7 +11,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     private val savedStateHandle : SavedStateHandle,
-    private val actionProcessor: ObservableTransformer<A, R>,
+    actionProcessor: ObservableTransformer<A, R>,
     defaultViewState: VS
 ): ViewModel() {
 

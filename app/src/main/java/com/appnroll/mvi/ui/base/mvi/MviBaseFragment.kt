@@ -7,7 +7,7 @@ abstract class MviBaseFragment<
         ResultType: MviResult,
         ViewStateType: MviViewState<ResultType>,
         ViewModelType: MviViewModel<ActionType, ResultType, ViewStateType>>(
-    private val viewModelClass: Class<ViewModelType>
+    viewModelClass: Class<ViewModelType>
 ): Fragment() {
 
     private val mviViewModelWrapper by lazy { MviViewModelWrapper(this, viewModelClass) }
