@@ -6,8 +6,8 @@ import com.appnroll.mvi.ui.components.home.mvi.HomeAction.*
 import com.appnroll.mvi.ui.components.home.mvi.HomeResult.*
 import com.appnroll.mvi.ui.model.Task
 import io.reactivex.Observable
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 
 class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinComponent {

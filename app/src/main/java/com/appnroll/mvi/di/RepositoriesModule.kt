@@ -2,7 +2,7 @@ package com.appnroll.mvi.di
 
 import com.appnroll.mvi.data.repositories.TaskRepository
 import com.appnroll.mvi.data.repositories.TaskRepositoryImpl
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 
 
 val repositoriesModule = module {

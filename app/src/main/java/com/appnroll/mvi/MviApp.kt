@@ -4,7 +4,8 @@ import android.app.Application
 import com.appnroll.mvi.di.appModule
 import com.appnroll.mvi.di.repositoriesModule
 import com.appnroll.mvi.di.roomModule
-import org.koin.android.ext.android.startKoin
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 
 class MviApp: Application() {
@@ -17,7 +18,10 @@ class MviApp: Application() {
     }
 
     private fun initKoin() {
-        startKoin(this, listOf(appModule, roomModule, repositoriesModule))
+        startKoin {
+            androidContext(this@MviApp)
+            modules(appModule, roomModule, repositoriesModule)
+        }
     }
 
     companion object {

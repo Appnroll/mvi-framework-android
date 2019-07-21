@@ -2,7 +2,7 @@ package com.appnroll.mvi.di
 
 import androidx.room.Room
 import com.appnroll.mvi.data.room.AppDatabase
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 
 
 val roomModule = module {
