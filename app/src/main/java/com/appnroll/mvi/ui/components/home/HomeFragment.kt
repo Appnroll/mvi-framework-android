@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.appnroll.mvi.R
@@ -41,7 +42,7 @@ class HomeFragment: MviBaseFragment<HomeAction, HomeResult, HomeViewState, HomeV
 
     override fun render(viewState: HomeViewState) {
         with(viewState) {
-            progressBar.visibility = if (inProgress) View.VISIBLE else View.GONE
+            progressBar.isVisible = inProgress
             newTaskInput.isEnabled = !inProgress
             addTaskButton.isEnabled = !inProgress
 

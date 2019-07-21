@@ -21,30 +21,19 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     private val actionsObserver = PublishRelay.create<A>()
     private val actionsSource = PublishRelay.create<A>()
     
-    private var viewStatesObservable: Observable<VS>? = null
-
-    @Suppress("UNCHECKED_CAST")
-    fun initViewStatesObservable() {
-        if (viewStatesObservable == null) {
-            viewStatesObservable = actionsObserver
-                .compose(actionProcessor)
-                .scan(viewState) { viewState: VS, result -> viewState.reduce(result) as VS }
-                .doOnNext(::saveNewViewState)
-                .distinctUntilChanged()
-                .replay(1)
-                .autoConnect(0)
-        }
+    val viewStatesObservable: Observable<VS> by lazy {
+        actionsObserver
+            .compose(actionProcessor)
+            .scan(viewState, ::reduce)
+            .doOnNext(::save)
+            .distinctUntilChanged()
+            .replay(1)
+            .autoConnect(0)
     }
-
-    fun getViewStatesObservable() =
-        viewStatesObservable ?: throw Exception(
-            "You need to invoke initViewStatesObservable(lastViewState) " +
-                    "in onCreate() method of Your Activity or onViewCreated() method of Your Fragment"
-        )
     
     fun startProcessingActions() {
         actionsSource.subscribe(actionsObserver).run { compositeDisposable.add(this) }
-        initialAction()?.let { action -> accept(action) }
+        initialActions().forEach { action -> accept(action) }
     }
     
     fun stopProcessingActions() {
@@ -54,19 +43,28 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     fun accept(action: A) {
         actionsSource.accept(action)
     }
-
-    open fun onLifecycleAttached(lifecycle: Lifecycle) {
-        // do nothing - can be override in subclasses
-    }
     
-    abstract fun initialAction(): A?
+    /**
+     * Lifecycle can be used for tracking Fragment or Activity events from within ViewModel
+     */
+    open fun onLifecycleAttached(lifecycle: Lifecycle) = Unit
+    
+    /**
+     * List of actions which will be invoked immediately after onStart callback in Activity or Fragment
+     */
+    open fun initialActions(): List<A> = emptyList()
     
     /**
      * Transform viewState when saving it to the handle which is restored after view model process recreation
      */
     open fun onSaveViewState(viewState: VS): VS? = viewState
 
-    private fun saveNewViewState(newViewState: VS) {
+    @Suppress("UNCHECKED_CAST")
+    private fun reduce( viewState: VS, result: R): VS {
+        return viewState.reduce(result) as VS
+    }
+    
+    private fun save(newViewState: VS) {
         if (newViewState.isSavable()) {
             savedStateHandle.set(VIEW_STATE_KEY, onSaveViewState(newViewState))
             viewState = newViewState

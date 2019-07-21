@@ -12,15 +12,15 @@ class HomeViewModel(savedStateHandle : SavedStateHandle): MviViewModel<HomeActio
     HomeActionProcessor(),
     HomeViewState.default()
 ) {
-
-    override fun initialAction(): HomeAction? {
+    
+    override fun initialActions(): List<HomeAction> {
         return if (viewState.tasks == null) {
-            HomeAction.LoadTasksAction
+            listOf(HomeAction.LoadTasksAction)
         } else {
-            null
+            super.initialActions()
         }
     }
-
+    
     fun addTask(taskContent: String) {
         if (!taskContent.isBlank()) {
             accept(HomeAction.AddTaskAction(taskContent))
