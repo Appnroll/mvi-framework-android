@@ -1,6 +1,5 @@
 package com.appnroll.mvi.ui.base.mvi
 
-import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -10,7 +9,6 @@ import io.reactivex.disposables.CompositeDisposable
 
 class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     private val viewModelProvider: ViewModelProvider,
-    private val viewStateParcelKey: String,
     private val lifecycle: Lifecycle,
     private val callback: MviControllerCallback<A, R, VS>
 ): LifecycleObserver {
@@ -25,13 +23,8 @@ class MviController<A: MviAction, R: MviResult, VS: MviViewState<R>>(
         lifecycle.addObserver(this)
     }
 
-    fun initViewStatesObservable(savedInstanceState: Bundle?) {
-        val lastViewState = savedInstanceState?.getParcelable(viewStateParcelKey) as? VS? ?: viewModel.viewState
-        viewModel.initViewStatesObservable(lastViewState)
-    }
-
-    fun saveLastViewState(outState: Bundle) {
-        outState.putParcelable(viewStateParcelKey, viewModel.viewState)
+    fun initViewStatesObservable() {
+        viewModel.initViewStatesObservable()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

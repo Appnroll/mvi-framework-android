@@ -3,6 +3,7 @@ package com.appnroll.mvi.ui.base.mvi
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProviders
 
 abstract class MviBaseFragment<
@@ -15,8 +16,7 @@ abstract class MviBaseFragment<
 
     private val mviController by lazy {
         MviController(
-            ViewModelProviders.of(this),
-            javaClass.name,
+            ViewModelProviders.of(this, SavedStateViewModelFactory(this)),
             lifecycle,
             this
         )
@@ -32,11 +32,6 @@ abstract class MviBaseFragment<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mviController.initViewStatesObservable(savedInstanceState)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        mviController.saveLastViewState(outState)
-        super.onSaveInstanceState(outState)
+        mviController.initViewStatesObservable()
     }
 }
