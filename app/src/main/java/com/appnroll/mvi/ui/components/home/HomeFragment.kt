@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment: Fragment() {
 
-    @Suppress("UNCHECKED_CAST")
     private val homeViewModel by lazy { provide(HomeViewModel::class.java) }
     private var disposables = CompositeDisposable()
 
