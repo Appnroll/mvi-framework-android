@@ -53,7 +53,7 @@ class ViewStateEmptyEvent: SingleEvent<Unit>(Unit) {
 
 
 abstract class SingleEvent<T>(
-    val argument: T,
+    private val argument: T,
     protected val isConsumed: AtomicBoolean = AtomicBoolean(false)
 ): Parcelable {
     

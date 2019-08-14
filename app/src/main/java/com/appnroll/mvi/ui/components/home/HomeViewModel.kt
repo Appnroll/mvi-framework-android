@@ -13,11 +13,9 @@ class HomeViewModel(savedStateHandle : SavedStateHandle): MviViewModel<HomeActio
     HomeViewState.default()
 ) {
     
-    override fun initialActions(): List<HomeAction> {
-        return if (viewState.tasks == null) {
-            listOf(HomeAction.LoadTasksAction)
-        } else {
-            super.initialActions()
+    fun loadDataIfNeeded() {
+        if (viewState.tasks == null) {
+            accept(HomeAction.LoadTasksAction)
         }
     }
     

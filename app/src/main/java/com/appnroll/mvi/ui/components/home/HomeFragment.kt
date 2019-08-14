@@ -6,17 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.appnroll.mvi.R
-import com.appnroll.mvi.ui.base.mvi.MviBaseFragment
-import com.appnroll.mvi.ui.components.home.mvi.HomeAction
-import com.appnroll.mvi.ui.components.home.mvi.HomeResult
+import com.appnroll.mvi.ui.base.mvi.provide
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
-class HomeFragment: MviBaseFragment<HomeAction, HomeResult, HomeViewState, HomeViewModel>(HomeViewModel::class.java) {
+class HomeFragment: Fragment() {
+
+    @Suppress("UNCHECKED_CAST")
+    private val homeViewModel by lazy { provide(HomeViewModel::class.java) }
+    private var disposables = CompositeDisposable()
 
     private val tasksAdapter = TasksAdapter()
 
@@ -31,16 +35,27 @@ class HomeFragment: MviBaseFragment<HomeAction, HomeResult, HomeViewState, HomeV
 
         addTaskButton.setOnClickListener {
             newTaskInput.text.toString().let {
-                viewModel.addTask(it)
+                homeViewModel.addTask(it)
             }
         }
 
         deleteCompletedTasksButton.setOnClickListener {
-            viewModel.deleteCompletedTasks()
+            homeViewModel.deleteCompletedTasks()
         }
     }
 
-    override fun render(viewState: HomeViewState) {
+    override fun onStart() {
+        super.onStart()
+        homeViewModel.init(::render).let { disposables.add(it) }
+        homeViewModel.loadDataIfNeeded()
+    }
+
+    override fun onStop() {
+        disposables.clear()
+        super.onStop()
+    }
+
+    private fun render(viewState: HomeViewState) {
         with(viewState) {
             progressBar.isVisible = inProgress
             newTaskInput.isEnabled = !inProgress
@@ -62,7 +77,7 @@ class HomeFragment: MviBaseFragment<HomeAction, HomeResult, HomeViewState, HomeV
 
     private fun initTasksRecyclerView() {
         tasksAdapter.onCheckChangeListener = { taskId, isChecked ->
-            viewModel.updateTask(taskId, isChecked)
+            homeViewModel.updateTask(taskId, isChecked)
         }
         tasksRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         tasksRecyclerView.overScrollMode = View.OVER_SCROLL_NEVER
