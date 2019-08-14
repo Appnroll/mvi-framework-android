@@ -39,18 +39,9 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
             .autoConnect(0)
     }
 
-    fun init(render: (VS) -> Unit): Disposable {
-        return viewStatesObservable.subscribe(render)
-    }
+    fun subscribe(render: (VS) -> Unit): Disposable = viewStatesObservable.subscribe(render)
 
-    fun accept(action: A) {
-        actionsSource.accept(action)
-    }
-
-    /**
-     * Transform viewState when saving it to the handle which is restored after view model recreation
-     */
-    open fun onSaveViewState(viewState: VS): VS? = viewState
+    fun accept(action: A) = actionsSource.accept(action)
 
     @Suppress("UNCHECKED_CAST")
     private fun reduce(viewState: VS, result: R): VS {
@@ -63,6 +54,11 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
             viewState = newViewState
         }
     }
+
+    /**
+     * Transform viewState when saving it to the handle which is restored after view model recreation
+     */
+    open fun onSaveViewState(viewState: VS): VS? = viewState
 
     companion object {
         private const val VIEW_STATE_KEY = "ViewStateKey"

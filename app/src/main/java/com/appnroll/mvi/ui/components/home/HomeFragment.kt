@@ -13,6 +13,7 @@ import com.appnroll.mvi.R
 import com.appnroll.mvi.ui.base.mvi.provide
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
@@ -45,7 +46,7 @@ class HomeFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
-        homeViewModel.init(::render).let { disposables.add(it) }
+        homeViewModel.subscribe(::render).addTo(disposables)
         homeViewModel.loadDataIfNeeded()
     }
 
