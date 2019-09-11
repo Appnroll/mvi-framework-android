@@ -33,8 +33,8 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
         actionsObserver
             .compose(actionProcessor)
             .scan(viewState, ::reduce)
-            .doOnNext(::save)
             .distinctUntilChanged()
+            .doOnNext(::save)
             .replay(1)
             .autoConnect(0)
     }
