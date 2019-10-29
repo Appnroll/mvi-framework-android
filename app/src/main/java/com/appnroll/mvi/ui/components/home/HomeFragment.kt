@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.appnroll.mvi.R
-import com.appnroll.mvi.ui.base.mvi.provide
+import com.appnroll.mvi.ui.base.mvi.mviViewModel
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -19,8 +19,8 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment: Fragment() {
 
-    private val homeViewModel by lazy { provide(HomeViewModel::class.java) }
-    private var disposables = CompositeDisposable()
+    private val homeViewModel: HomeViewModel by mviViewModel()
+    private var onStopDisposables = CompositeDisposable()
 
     private val tasksAdapter = TasksAdapter()
 
@@ -46,12 +46,12 @@ class HomeFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
-        homeViewModel.subscribe(::render).addTo(disposables)
+        homeViewModel.subscribe(::render).addTo(onStopDisposables)
         homeViewModel.loadDataIfNeeded()
     }
 
     override fun onStop() {
-        disposables.clear()
+        onStopDisposables.clear()
         super.onStop()
     }
 

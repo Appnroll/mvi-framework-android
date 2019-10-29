@@ -20,7 +20,13 @@ class MviApp: Application() {
     private fun initKoin() {
         startKoin {
             androidContext(this@MviApp)
-            modules(appModule, roomModule, repositoriesModule)
+            modules(
+                listOf(
+                    appModule,
+                    roomModule,
+                    repositoriesModule
+                )
+            )
         }
     }
 

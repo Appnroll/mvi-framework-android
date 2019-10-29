@@ -34,32 +34,35 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
-    implementation 'androidx.core:core-ktx:1.2.0-alpha02'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-alpha02'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-rc01'
 
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.1.0-beta02'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.1.0-beta02'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.0-rc01'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.2.0-rc01'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
-    implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
-    implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
+    implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.1'
 
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.1.0'
 
-    implementation 'org.koin:koin-android:2.0.0'
+    implementation 'org.koin:koin-android:2.0.1'
 
-    implementation 'androidx.room:room-runtime:2.2.0-alpha01'
-    kapt 'androidx.room:room-compiler:2.2.0-alpha01'
+    implementation 'androidx.room:room-runtime:2.2.1'
+    kapt 'androidx.room:room-compiler:2.2.1'
 
     testImplementation 'junit:junit:4.12'
 

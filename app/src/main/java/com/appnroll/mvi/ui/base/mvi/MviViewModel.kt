@@ -65,8 +65,12 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     }
 }
 
-fun <VM: MviViewModel<*, *, *>> Fragment.provide(viewModelClass: Class<VM>) =
-    ViewModelProviders.of(this, SavedStateViewModelFactory(this)).get(viewModelClass)
+inline fun <reified VM: MviViewModel<*, *, *>> Fragment.mviViewModel() = lazy {
+    ViewModelProviders.of(this, SavedStateViewModelFactory(requireActivity().application, this))
+        .get(VM::class.java)
+}
 
-fun <VM: MviViewModel<*, *, *>> FragmentActivity.provide(viewModelClass: Class<VM>) =
-    ViewModelProviders.of(this, SavedStateViewModelFactory(this)).get(viewModelClass)
+inline fun <reified VM: MviViewModel<*, *, *>> FragmentActivity.mviViewModel() = lazy {
+    ViewModelProviders.of(this, SavedStateViewModelFactory(application, this))
+        .get(VM::class.java)
+}

@@ -1,6 +1,5 @@
-package com.appnroll.mvi.utils
+package com.appnroll.mvi.ui.base.mvi
 
-import com.appnroll.mvi.ui.base.mvi.SchedulersProvider
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
