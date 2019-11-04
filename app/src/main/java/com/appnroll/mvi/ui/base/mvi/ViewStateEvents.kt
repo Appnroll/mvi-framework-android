@@ -10,11 +10,11 @@ data class ViewStateEvent<T: Parcelable>(
     val payload: T,
     override val isConsumed: AtomicBoolean = AtomicBoolean(false)
 ): SingleEvent<T>(payload), Parcelable {
-    
+
     override fun equals(other: Any?): Boolean {
         return super.equals(other)
     }
-    
+
     override fun hashCode(): Int {
         var result = payload.hashCode()
         result = 31 * result + isConsumed.hashCode()
@@ -25,12 +25,12 @@ data class ViewStateEvent<T: Parcelable>(
 
 data class ViewStateNonParcelableEvent<T>(
     val payload: T
-): SingleEvent<T>(payload){
-    
+): SingleEvent<T>(payload) {
+
     override fun equals(other: Any?): Boolean {
         return super.equals(other)
     }
-    
+
     override fun hashCode(): Int {
         var result = payload.hashCode()
         result = 31 * result + isConsumed.hashCode()
@@ -44,11 +44,11 @@ data class ViewStateErrorEvent(
     val payload: Throwable,
     override val isConsumed: AtomicBoolean = AtomicBoolean(false)
 ): SingleEvent<Throwable>(payload), Parcelable {
-    
+
     override fun equals(other: Any?): Boolean {
         return super.equals(other)
     }
-    
+
     override fun hashCode(): Int {
         var result = payload.hashCode()
         result = 31 * result + isConsumed.hashCode()
@@ -61,11 +61,11 @@ data class ViewStateErrorEvent(
 class ViewStateEmptyEvent(
     override val isConsumed: AtomicBoolean = AtomicBoolean(false)
 ): SingleEvent<Unit>(Unit), Parcelable {
-    
+
     override fun equals(other: Any?): Boolean {
         return super.equals(other)
     }
-    
+
     override fun hashCode(): Int {
         return isConsumed.hashCode()
     }
@@ -76,12 +76,16 @@ abstract class SingleEvent<T>(
     private val argument: T,
     protected open val isConsumed: AtomicBoolean = AtomicBoolean(false)
 ) {
-    
+
     private fun isConsumed(setAsConsumed: Boolean = false) = isConsumed.getAndSet(setAsConsumed)
-    
+
     fun consume(action: (T) -> Unit) {
         if (!isConsumed(true)) {
             action.invoke(argument)
         }
+    }
+
+    fun resend() {
+        isConsumed.set(false)
     }
 }
