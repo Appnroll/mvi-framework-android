@@ -46,7 +46,7 @@ class HomeFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
-        homeViewModel.subscribe(::render).addTo(onStopDisposables)
+        homeViewModel.init(::render).addTo(onStopDisposables)
         homeViewModel.loadDataIfNeeded()
     }
 

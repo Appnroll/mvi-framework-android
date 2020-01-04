@@ -12,22 +12,18 @@ import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.Disposable
 
 
+@Suppress("UNCHECKED_CAST")
 abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     private val savedStateHandle: SavedStateHandle,
     actionProcessor: ObservableTransformer<A, R>,
     defaultViewState: VS
 ): ViewModel() {
 
-    var viewState: VS = savedStateHandle.get<VS>(VIEW_STATE_KEY) ?: defaultViewState
+    protected var viewState: VS = savedStateHandle.get<VS>(VIEW_STATE_KEY) ?: defaultViewState
 
     private val actionsObserver = PublishRelay.create<A>()
     private val actionsSource = PublishRelay.create<A>()
     private val disposable = actionsSource.subscribe(actionsObserver)
-
-    override fun onCleared() {
-        disposable.dispose()
-        super.onCleared()
-    }
 
     private val viewStatesObservable: Observable<VS> by lazy {
         actionsObserver
@@ -39,11 +35,15 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
             .autoConnect(0)
     }
 
-    fun subscribe(render: (VS) -> Unit): Disposable = viewStatesObservable.subscribe(render)
+    override fun onCleared() {
+        disposable.dispose()
+        super.onCleared()
+    }
+
+    fun init(render: (VS) -> Unit): Disposable = viewStatesObservable.subscribe(render)
 
     fun accept(action: A) = actionsSource.accept(action)
 
-    @Suppress("UNCHECKED_CAST")
     private fun reduce(viewState: VS, result: R) = viewState.reduce(result) as VS
 
     private fun save(newViewState: VS) {
@@ -54,7 +54,8 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     }
 
     /**
-     * Transform viewState when saving it to the handle which is restored after view model recreation
+     * Transform viewState when saving it to the savedStateHandle.
+     * It will then be restored after after view model recreation.
      */
     open fun onSaveViewState(viewState: VS): VS? = viewState
 
