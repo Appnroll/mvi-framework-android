@@ -2,24 +2,32 @@ package com.appnroll.mvi.ui.base.mvi
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 import java.util.concurrent.atomic.AtomicBoolean
 
 
 @Parcelize
-data class ViewStateEvent<T: Parcelable>(
+data class ViewStateEvent<T : Parcelable>(
     val payload: T,
     override val isConsumed: AtomicBoolean = AtomicBoolean(false)
-): SingleEvent<T>(payload), Parcelable {
+) : SingleEvent<T>(payload), Parcelable {
 
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
-    }
+    override fun equals(other: Any?) = super.equals(other)
+    override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
+}
 
-    override fun hashCode(): Int {
-        var result = payload.hashCode()
-        result = 31 * result + isConsumed.hashCode()
-        return result
-    }
+
+/**
+ * ViewState event generic class for a simple types like String, Int, Float, Double etc.
+ */
+@Parcelize
+data class ViewStateSimpleTypeEvent<T : Any>(
+    val payload: @RawValue T,
+    override val isConsumed: AtomicBoolean = AtomicBoolean(false)
+) : SingleEvent<T>(payload), Parcelable {
+
+    override fun equals(other: Any?) = super.equals(other)
+    override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
 
 
@@ -27,15 +35,8 @@ data class ViewStateNonParcelableEvent<T>(
     val payload: T
 ): SingleEvent<T>(payload) {
 
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
-    }
-
-    override fun hashCode(): Int {
-        var result = payload.hashCode()
-        result = 31 * result + isConsumed.hashCode()
-        return result
-    }
+    override fun equals(other: Any?) = super.equals(other)
+    override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
 
 
@@ -43,32 +44,20 @@ data class ViewStateNonParcelableEvent<T>(
 data class ViewStateErrorEvent(
     val payload: Throwable,
     override val isConsumed: AtomicBoolean = AtomicBoolean(false)
-): SingleEvent<Throwable>(payload), Parcelable {
+) : SingleEvent<Throwable>(payload), Parcelable {
 
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
-    }
-
-    override fun hashCode(): Int {
-        var result = payload.hashCode()
-        result = 31 * result + isConsumed.hashCode()
-        return result
-    }
+    override fun equals(other: Any?) = super.equals(other)
+    override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
 
 
 @Parcelize
 class ViewStateEmptyEvent(
     override val isConsumed: AtomicBoolean = AtomicBoolean(false)
-): SingleEvent<Unit>(Unit), Parcelable {
+) : SingleEvent<Unit>(Unit), Parcelable {
 
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
-    }
-
-    override fun hashCode(): Int {
-        return isConsumed.hashCode()
-    }
+    override fun equals(other: Any?) = super.equals(other)
+    override fun hashCode() = isConsumed.hashCode()
 }
 
 
@@ -80,12 +69,10 @@ abstract class SingleEvent<T>(
     private fun isConsumed(setAsConsumed: Boolean = false) = isConsumed.getAndSet(setAsConsumed)
 
     fun consume(action: (T) -> Unit) {
-        if (!isConsumed(true)) {
+        if (!isConsumed.getAndSet(true)) {
             action.invoke(argument)
         }
     }
 
-    fun resend() {
-        isConsumed.set(false)
-    }
+    fun resend() = isConsumed.set(false)
 }

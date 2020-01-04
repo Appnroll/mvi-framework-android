@@ -44,9 +44,7 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     fun accept(action: A) = actionsSource.accept(action)
 
     @Suppress("UNCHECKED_CAST")
-    private fun reduce(viewState: VS, result: R): VS {
-        return viewState.reduce(result) as VS
-    }
+    private fun reduce(viewState: VS, result: R) = viewState.reduce(result) as VS
 
     private fun save(newViewState: VS) {
         if (newViewState.isSavable()) {
