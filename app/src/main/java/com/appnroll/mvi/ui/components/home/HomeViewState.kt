@@ -4,7 +4,12 @@ import com.appnroll.mvi.ui.base.mvi.MviViewState
 import com.appnroll.mvi.ui.base.mvi.ViewStateEmptyEvent
 import com.appnroll.mvi.ui.base.mvi.ViewStateErrorEvent
 import com.appnroll.mvi.ui.components.home.mvi.HomeResult
-import com.appnroll.mvi.ui.components.home.mvi.HomeResult.*
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.AddTaskResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.DeleteCompletedTasksResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.ErrorResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.InProgressResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.LoadTasksResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.UpdateTaskResult
 import com.appnroll.mvi.ui.model.Task
 import kotlinx.android.parcel.Parcelize
 

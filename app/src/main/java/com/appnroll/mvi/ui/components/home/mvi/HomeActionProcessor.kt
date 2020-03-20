@@ -1,14 +1,25 @@
 package com.appnroll.mvi.ui.components.home.mvi
 
 import com.appnroll.mvi.data.repositories.TaskRepository
-import com.appnroll.mvi.ui.base.mvi.*
-import com.appnroll.mvi.ui.components.home.mvi.HomeAction.*
-import com.appnroll.mvi.ui.components.home.mvi.HomeResult.*
+import com.appnroll.mvi.ui.base.mvi.MviActionsProcessor
+import com.appnroll.mvi.ui.base.mvi.SchedulersProvider
+import com.appnroll.mvi.ui.base.mvi.createActionProcessor
+import com.appnroll.mvi.ui.base.mvi.onCompleteSafe
+import com.appnroll.mvi.ui.base.mvi.onNextSafe
+import com.appnroll.mvi.ui.components.home.mvi.HomeAction.AddTaskAction
+import com.appnroll.mvi.ui.components.home.mvi.HomeAction.DeleteCompletedTasksAction
+import com.appnroll.mvi.ui.components.home.mvi.HomeAction.LoadTasksAction
+import com.appnroll.mvi.ui.components.home.mvi.HomeAction.UpdateTaskAction
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.AddTaskResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.DeleteCompletedTasksResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.ErrorResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.InProgressResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.LoadTasksResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeResult.UpdateTaskResult
 import com.appnroll.mvi.ui.model.Task
 import io.reactivex.Observable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-
 
 class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinComponent {
 
