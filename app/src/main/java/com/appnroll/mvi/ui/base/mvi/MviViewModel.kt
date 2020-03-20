@@ -1,16 +1,11 @@
 package com.appnroll.mvi.ui.base.mvi
 
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.Disposable
-
 
 @Suppress("UNCHECKED_CAST")
 abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
@@ -62,14 +57,4 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     companion object {
         private const val VIEW_STATE_KEY = "ViewStateKey"
     }
-}
-
-inline fun <reified VM: MviViewModel<*, *, *>> Fragment.mviViewModel() = lazy {
-    ViewModelProviders.of(this, SavedStateViewModelFactory(requireActivity().application, this))
-        .get(VM::class.java)
-}
-
-inline fun <reified VM: MviViewModel<*, *, *>> FragmentActivity.mviViewModel() = lazy {
-    ViewModelProviders.of(this, SavedStateViewModelFactory(application, this))
-        .get(VM::class.java)
 }
