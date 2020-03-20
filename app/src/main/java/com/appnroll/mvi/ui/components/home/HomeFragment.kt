@@ -10,16 +10,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.appnroll.mvi.R
-import com.appnroll.mvi.ui.base.mvi.mviViewModel
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_home.*
-
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 class HomeFragment: Fragment() {
 
-    private val homeViewModel: HomeViewModel by mviViewModel()
+    private val homeViewModel: HomeViewModel by stateViewModel()
     private var onStopDisposables = CompositeDisposable()
 
     private val tasksAdapter = TasksAdapter()

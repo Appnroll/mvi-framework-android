@@ -61,7 +61,7 @@ dependencies {
 
     def koinVersion = "2.1.4"
     implementation "org.koin:koin-android:$koinVersion"
-    implementation "org.koin:koin-android-viewmodel:$koinVersion"
+    implementation "org.koin:koin-androidx-viewmodel:$koinVersion"
 
     def roomVersion = "2.2.4"
     implementation "androidx.room:room-runtime:$roomVersion"
