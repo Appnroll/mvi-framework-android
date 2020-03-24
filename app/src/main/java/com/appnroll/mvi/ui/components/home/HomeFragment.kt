@@ -67,7 +67,9 @@ class HomeFragment : Fragment() {
 
             deleteCompletedTasksButton.isEnabled = tasks?.find { it.isDone } != null
 
-            viewState.tasks?.let { tasksAdapter.tasks = it }
+            viewState.tasks?.let { newTasks ->
+                tasksAdapter.tasks = newTasks
+            }
 
             newTaskAdded?.consume {
                 newTaskInput.setText("")

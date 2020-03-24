@@ -1,4 +1,4 @@
-package com.appnroll.mvi.ui.base.mvi
+package com.appnroll.mvi.common
 
 import io.reactivex.Scheduler
 

@@ -2,7 +2,7 @@ package com.appnroll.mvi.ui.components.home.mvi
 
 import com.appnroll.mvi.data.repositories.TaskRepository
 import com.appnroll.mvi.ui.base.mvi.MviActionsProcessor
-import com.appnroll.mvi.ui.base.mvi.SchedulersProvider
+import com.appnroll.mvi.common.SchedulersProvider
 import com.appnroll.mvi.ui.base.mvi.createActionProcessor
 import com.appnroll.mvi.ui.base.mvi.onCompleteSafe
 import com.appnroll.mvi.ui.base.mvi.onNextSafe
