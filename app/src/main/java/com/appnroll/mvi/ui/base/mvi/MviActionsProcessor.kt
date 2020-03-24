@@ -6,9 +6,8 @@ import io.reactivex.ObservableEmitter
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 
+abstract class MviActionsProcessor<A : MviAction, R : MviResult> : ObservableTransformer<A, R> {
 
-abstract class MviActionsProcessor<A: MviAction, R: MviResult>: ObservableTransformer<A, R> {
-    
     final override fun apply(actions: Observable<A>): ObservableSource<R> {
         return actions.publish { shared ->
             Observable.merge(
@@ -16,15 +15,15 @@ abstract class MviActionsProcessor<A: MviAction, R: MviResult>: ObservableTransf
             )
         }
     }
-    
+
     abstract fun getActionProcessors(shared: Observable<A>): List<Observable<R>>
-    
-    inline fun <reified A>Observable<in A>.connect(processor: ObservableTransformer<A, R>): Observable<R> {
+
+    inline fun <reified A> Observable<in A>.connect(processor: ObservableTransformer<A, R>): Observable<R> {
         return ofType(A::class.java).compose(processor)
     }
 }
 
-fun <A: MviAction, R: MviResult>createActionProcessor(
+fun <A : MviAction, R : MviResult> createActionProcessor(
     schedulersProvider: SchedulersProvider? = null,
     initialResult: ((a: A) -> R?)? = null,
     onErrorResult: ((t: Throwable) -> R)? = null,
@@ -40,11 +39,11 @@ fun <A: MviAction, R: MviResult>createActionProcessor(
                     .subscribeOn(schedulersProvider.subscriptionScheduler())
                     .observeOn(schedulersProvider.observationScheduler())
             }
-            
+
             if (onErrorResult != null) {
                 observable = observable.onErrorReturn { t -> onErrorResult.invoke(t) }
             }
-            
+
             if (initialResult != null) {
                 observable = observable.startWith(initialResult.invoke(action))
             }
@@ -52,10 +51,11 @@ fun <A: MviAction, R: MviResult>createActionProcessor(
         }
 }
 
-fun <T> asObservable(doStuff: ObservableEmitter<T>.() -> Unit): Observable<T> = Observable.create<T> { emitter ->
-    emitter.doStuff()
-    emitter.onCompleteSafe()
-}
+fun <T> asObservable(doStuff: ObservableEmitter<T>.() -> Unit): Observable<T> =
+    Observable.create<T> { emitter ->
+        emitter.doStuff()
+        emitter.onCompleteSafe()
+    }
 
 fun <T> ObservableEmitter<T>.onNextSafe(item: T) {
     if (!isDisposed) {

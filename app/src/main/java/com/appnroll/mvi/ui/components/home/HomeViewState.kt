@@ -3,13 +3,11 @@ package com.appnroll.mvi.ui.components.home
 import com.appnroll.mvi.ui.base.mvi.MviViewState
 import com.appnroll.mvi.ui.base.mvi.ViewStateEmptyEvent
 import com.appnroll.mvi.ui.base.mvi.ViewStateErrorEvent
-import com.appnroll.mvi.ui.components.home.mvi.HomeResult
-import com.appnroll.mvi.ui.components.home.mvi.HomeResult.AddTaskResult
-import com.appnroll.mvi.ui.components.home.mvi.HomeResult.DeleteCompletedTasksResult
-import com.appnroll.mvi.ui.components.home.mvi.HomeResult.ErrorResult
-import com.appnroll.mvi.ui.components.home.mvi.HomeResult.InProgressResult
-import com.appnroll.mvi.ui.components.home.mvi.HomeResult.LoadTasksResult
-import com.appnroll.mvi.ui.components.home.mvi.HomeResult.UpdateTaskResult
+import com.appnroll.mvi.ui.components.home.mvi.HomeAction
+import com.appnroll.mvi.ui.components.home.mvi.HomeAction.AddTaskAction
+import com.appnroll.mvi.ui.components.home.mvi.HomeAction.DeleteCompletedTasksAction
+import com.appnroll.mvi.ui.components.home.mvi.HomeAction.LoadTasksAction
+import com.appnroll.mvi.ui.components.home.mvi.HomeAction.UpdateTaskAction
 import com.appnroll.mvi.ui.model.Task
 import kotlinx.android.parcel.Parcelize
 
@@ -18,59 +16,27 @@ data class HomeViewState(
     val inProgress: Boolean,
     val tasks: List<Task>?,
     val newTaskAdded: ViewStateEmptyEvent?,
-    val error: ViewStateErrorEvent?
-): MviViewState<HomeResult> {
+    val error: ViewStateErrorEvent?,
+    override val isSavable: Boolean = !inProgress
+) : MviViewState {
+
+    fun loadDataIfNeeded(): HomeAction? {
+        return if (tasks == null) LoadTasksAction else null
+    }
+
+    fun addTask(taskContent: String): HomeAction? {
+        return if (!taskContent.isBlank()) AddTaskAction(taskContent) else null
+    }
+
+    fun deleteCompletedTasks(): HomeAction? {
+        return DeleteCompletedTasksAction
+    }
+
+    fun updateTask(taskId: Long, isDone: Boolean): HomeAction? {
+        return UpdateTaskAction(taskId, isDone)
+    }
 
     companion object {
-
         fun default() = HomeViewState(false, null, null, null)
     }
-
-    override fun reduce(result: HomeResult): HomeViewState {
-        return when (result) {
-            is InProgressResult -> result.reduce()
-            is ErrorResult -> result.reduce()
-            is LoadTasksResult -> result.reduce()
-            is AddTaskResult -> result.reduce()
-            is UpdateTaskResult -> result.reduce()
-            is DeleteCompletedTasksResult -> result.reduce()
-        }
-    }
-
-    private fun InProgressResult.reduce() = this@HomeViewState.copy(
-        inProgress = true
-    )
-
-    private fun ErrorResult.reduce() = this@HomeViewState.copy(
-        inProgress = false,
-        error = ViewStateErrorEvent(t)
-    )
-
-    private fun LoadTasksResult.reduce() = this@HomeViewState.copy(
-        inProgress = false,
-        tasks = tasks
-    )
-
-    private fun AddTaskResult.reduce() = this@HomeViewState.copy(
-        inProgress = false,
-        tasks = tasks?.toMutableList()?.apply { add(addedTask) }?.toList(),
-        newTaskAdded = ViewStateEmptyEvent()
-    )
-
-    private fun UpdateTaskResult.reduce() = this@HomeViewState.copy(
-        inProgress = false,
-        tasks = tasks?.map { if (it.id == updatedTask.id) updatedTask else it } // replace updated task in the tasks list
-    )
-
-    private fun DeleteCompletedTasksResult.reduce(): HomeViewState {
-        val deletedIds = deletedTasks.map { it.id }
-        val newTasks = tasks?.toMutableList()
-        newTasks?.removeAll { deletedIds.contains(it.id) }
-        return this@HomeViewState.copy(
-            inProgress = false,
-            tasks = newTasks
-        )
-    }
-
-    override fun isSavable() = !inProgress
 }

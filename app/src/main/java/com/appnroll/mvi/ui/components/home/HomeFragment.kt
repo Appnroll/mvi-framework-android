@@ -10,18 +10,30 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.appnroll.mvi.R
+import com.appnroll.mvi.ui.base.mvi.mviStateProcessor
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
+import com.appnroll.mvi.utils.whenStarted
+import com.appnroll.mvi.utils.whenStopped
 import kotlinx.android.synthetic.main.fragment_home.*
-import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 class HomeFragment : Fragment() {
-    private val homeViewModel: HomeViewModel by stateViewModel()
-    private var onStopDisposables = CompositeDisposable()
+    private val homeStateProcessor by mviStateProcessor(ViewModelName)
 
     private val tasksAdapter = TasksAdapter { taskId, isChecked ->
-        homeViewModel.updateTask(taskId, isChecked)
+        homeStateProcessor.accept { updateTask(taskId, isChecked) }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        whenStarted {
+            val disposable = homeStateProcessor.init(::render)
+            whenStopped {
+                disposable.dispose()
+            }
+
+            homeStateProcessor.accept { loadDataIfNeeded() }
+        }
     }
 
     override fun onCreateView(
@@ -38,25 +50,12 @@ class HomeFragment : Fragment() {
         initTasksRecyclerView()
 
         addTaskButton.setOnClickListener {
-            newTaskInput.text.toString().let {
-                homeViewModel.addTask(it)
-            }
+            homeStateProcessor.accept { addTask(newTaskInput.text.toString()) }
         }
 
         deleteCompletedTasksButton.setOnClickListener {
-            homeViewModel.deleteCompletedTasks()
+            homeStateProcessor.accept { deleteCompletedTasks() }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        homeViewModel.init(::render).addTo(onStopDisposables)
-        homeViewModel.loadDataIfNeeded()
-    }
-
-    override fun onStop() {
-        onStopDisposables.clear()
-        super.onStop()
     }
 
     private fun render(viewState: HomeViewState) {
@@ -86,5 +85,9 @@ class HomeFragment : Fragment() {
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         tasksRecyclerView.overScrollMode = View.OVER_SCROLL_NEVER
         tasksRecyclerView.adapter = tasksAdapter
+    }
+
+    companion object {
+        const val ViewModelName = "viewmodel.home"
     }
 }

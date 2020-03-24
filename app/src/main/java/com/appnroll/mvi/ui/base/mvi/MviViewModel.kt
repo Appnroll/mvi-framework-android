@@ -8,13 +8,18 @@ import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.Disposable
 
 @Suppress("UNCHECKED_CAST")
-abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
+class MviViewModel<
+        A : MviAction,
+        R : MviResult,
+        VS : MviViewState>(
     private val savedStateHandle: SavedStateHandle,
-    actionProcessor: ObservableTransformer<A, R>,
-    defaultViewState: VS
-): ViewModel() {
+    private val reducer: MviResultReducer<R, VS>,
+    actionProcessor: ObservableTransformer<A, R>
+) : ViewModel(), MviStateProcessor<A, VS> {
 
-    protected var viewState: VS = savedStateHandle.get<VS>(VIEW_STATE_KEY) ?: defaultViewState
+    @PublishedApi
+    internal var viewState: VS =
+        savedStateHandle.get<VS>(VIEW_STATE_KEY) ?: reducer.default()
 
     private val actionsObserver = PublishRelay.create<A>()
     private val actionsSource = PublishRelay.create<A>()
@@ -23,36 +28,36 @@ abstract class MviViewModel<A: MviAction, R: MviResult, VS: MviViewState<R>>(
     private val viewStatesObservable: Observable<VS> by lazy {
         actionsObserver
             .compose(actionProcessor)
-            .scan(viewState, ::reduce)
+            .scan<VS>(viewState, reducer::reduce)
             .distinctUntilChanged()
-            .doOnNext(::save)
+            .doOnNext { state ->
+                if (state.isSavable) {
+                    savedStateHandle.set(VIEW_STATE_KEY, reducer::fold)
+                    viewState = state
+                }
+            }
             .replay(1)
             .autoConnect(0)
+    }
+
+    override fun init(render: (VS) -> Unit): Disposable {
+        return viewStatesObservable.subscribe(render)
+    }
+
+    override fun accept(intent: VS.() -> A?) {
+        accept(
+            action = viewState.intent() ?: return
+        )
+    }
+
+    fun accept(action: A) {
+        actionsSource.accept(action)
     }
 
     override fun onCleared() {
         disposable.dispose()
         super.onCleared()
     }
-
-    fun init(render: (VS) -> Unit): Disposable = viewStatesObservable.subscribe(render)
-
-    fun accept(action: A) = actionsSource.accept(action)
-
-    private fun reduce(viewState: VS, result: R) = viewState.reduce(result) as VS
-
-    private fun save(newViewState: VS) {
-        if (newViewState.isSavable()) {
-            savedStateHandle.set(VIEW_STATE_KEY, onSaveViewState(newViewState))
-            viewState = newViewState
-        }
-    }
-
-    /**
-     * Transform viewState when saving it to the savedStateHandle.
-     * It will then be restored after after view model recreation.
-     */
-    open fun onSaveViewState(viewState: VS): VS? = viewState
 
     companion object {
         private const val VIEW_STATE_KEY = "ViewStateKey"

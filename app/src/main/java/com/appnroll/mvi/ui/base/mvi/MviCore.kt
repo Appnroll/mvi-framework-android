@@ -2,14 +2,16 @@ package com.appnroll.mvi.ui.base.mvi
 
 import android.os.Parcelable
 
-
 interface MviAction
 
 interface MviResult
 
-interface MviViewState<R: MviResult>: Parcelable {
+interface MviViewState : Parcelable {
+    val isSavable: Boolean
+}
 
-    fun reduce(result: R): MviViewState<R>
-
-    fun isSavable(): Boolean
+interface MviResultReducer<R : MviResult, S : MviViewState> {
+    fun default(): S
+    fun reduce(current: S, result: R): S
+    fun fold(current: S): S? = current
 }
