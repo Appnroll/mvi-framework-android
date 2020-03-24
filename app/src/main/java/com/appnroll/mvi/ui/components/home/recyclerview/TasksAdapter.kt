@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.appnroll.mvi.ui.model.Task
 
 
-class TasksAdapter: RecyclerView.Adapter<TaskVieHolder>() {
+class TasksAdapter: RecyclerView.Adapter<TaskViewHolder>() {
 
     var onCheckChangeListener: ((Long, Boolean) -> Unit)? = null
 
@@ -18,13 +18,13 @@ class TasksAdapter: RecyclerView.Adapter<TaskVieHolder>() {
         this.tasks = newTasks
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskVieHolder {
-        return TaskVieHolder(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+        return TaskViewHolder(parent)
     }
 
     override fun getItemCount() = tasks.size
 
-    override fun onBindViewHolder(holder: TaskVieHolder, position: Int) {
+    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.bind(tasks[position], ::onCheckChanged)
     }
 

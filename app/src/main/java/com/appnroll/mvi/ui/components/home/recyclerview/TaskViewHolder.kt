@@ -10,7 +10,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_task.*
 
 
-class TaskVieHolder(
+class TaskViewHolder(
     parent: ViewGroup,
     override val containerView: View = parent.inflateItem(R.layout.item_task)
 ): RecyclerView.ViewHolder(containerView), LayoutContainer {
