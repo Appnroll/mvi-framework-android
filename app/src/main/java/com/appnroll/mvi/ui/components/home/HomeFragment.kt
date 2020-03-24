@@ -16,14 +16,19 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
-class HomeFragment: Fragment() {
-
+class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by stateViewModel()
     private var onStopDisposables = CompositeDisposable()
 
-    private val tasksAdapter = TasksAdapter()
+    private val tasksAdapter = TasksAdapter { taskId, isChecked ->
+        homeViewModel.updateTask(taskId, isChecked)
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -62,7 +67,7 @@ class HomeFragment: Fragment() {
 
             deleteCompletedTasksButton.isEnabled = tasks?.find { it.isDone } != null
 
-            viewState.tasks?.let { tasksAdapter.updateList(it) }
+            viewState.tasks?.let { tasksAdapter.tasks = it }
 
             newTaskAdded?.consume {
                 newTaskInput.setText("")
@@ -75,10 +80,8 @@ class HomeFragment: Fragment() {
     }
 
     private fun initTasksRecyclerView() {
-        tasksAdapter.onCheckChangeListener = { taskId, isChecked ->
-            homeViewModel.updateTask(taskId, isChecked)
-        }
-        tasksRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        tasksRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         tasksRecyclerView.overScrollMode = View.OVER_SCROLL_NEVER
         tasksRecyclerView.adapter = tasksAdapter
     }
