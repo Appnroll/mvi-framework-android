@@ -8,13 +8,14 @@ import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.Disposable
 
 
-
 @Suppress("UNCHECKED_CAST")
 class MviViewModel<
         A : MviAction,
+        R : MviResult,
         VS : MviViewState>(
     private val savedStateHandle: SavedStateHandle,
-    mviFlow: mviFlow
+    private val reducer: MviReducer<R, VS>,
+    actionProcessor: ObservableTransformer<A, R>
 ) : ViewModel(), MviStateController<A, VS> {
 
     @PublishedApi
