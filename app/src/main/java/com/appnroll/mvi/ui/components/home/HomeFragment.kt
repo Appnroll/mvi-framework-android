@@ -10,29 +10,32 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.appnroll.mvi.R
-import com.appnroll.mvi.ui.base.mvi.mviStateProcessor
+import com.appnroll.mvi.ui.base.mvi.MviStateController
+import com.appnroll.mvi.utils.mviStateProcessor
+import com.appnroll.mvi.ui.components.home.mvi.HomeAction
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
 import com.appnroll.mvi.utils.whenStarted
 import com.appnroll.mvi.utils.whenStopped
 import kotlinx.android.synthetic.main.fragment_home.*
 
+
 class HomeFragment : Fragment() {
-    private val homeStateProcessor by mviStateProcessor(ViewModelName)
+    private val homeStateController: MviStateController<HomeAction, HomeViewState> by mviStateProcessor(ViewModelName)
 
     private val tasksAdapter = TasksAdapter { taskId, isChecked ->
-        homeStateProcessor.accept { updateTask(taskId, isChecked) }
+        homeStateController.accept { updateTask(taskId, isChecked) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         whenStarted {
-            val disposable = homeStateProcessor.init(::render)
+            val disposable = homeStateController.init(::render)
             whenStopped {
                 disposable.dispose()
             }
 
-            homeStateProcessor.accept { loadDataIfNeeded() }
+            homeStateController.accept { loadDataIfNeeded() }
         }
     }
 
@@ -50,11 +53,11 @@ class HomeFragment : Fragment() {
         initTasksRecyclerView()
 
         addTaskButton.setOnClickListener {
-            homeStateProcessor.accept { addTask(newTaskInput.text.toString()) }
+            homeStateController.accept { addTask(newTaskInput.text.toString()) }
         }
 
         deleteCompletedTasksButton.setOnClickListener {
-            homeStateProcessor.accept { deleteCompletedTasks() }
+            homeStateController.accept { deleteCompletedTasks() }
         }
     }
 

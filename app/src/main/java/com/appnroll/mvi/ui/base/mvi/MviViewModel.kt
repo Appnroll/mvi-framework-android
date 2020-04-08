@@ -7,15 +7,15 @@ import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.Disposable
 
+
+
 @Suppress("UNCHECKED_CAST")
 class MviViewModel<
         A : MviAction,
-        R : MviResult,
         VS : MviViewState>(
     private val savedStateHandle: SavedStateHandle,
-    private val reducer: MviResultReducer<R, VS>,
-    actionProcessor: ObservableTransformer<A, R>
-) : ViewModel(), MviStateProcessor<A, VS> {
+    mviFlow: mviFlow
+) : ViewModel(), MviStateController<A, VS> {
 
     @PublishedApi
     internal var viewState: VS =
@@ -25,19 +25,43 @@ class MviViewModel<
     private val actionsSource = PublishRelay.create<A>()
     private val disposable = actionsSource.subscribe(actionsObserver)
 
+    /*
+    * If we would separate common/business logic flow Action -> AP -> Result then this part could be
+    * delegate to staged logic A->AP->R then second loop R->Reducer->VS. This is already partially
+    * implemented by action processors.
+    *
+    * Extended ActionProcessor implements relays, subject configuration and cleanup
+    * New StateProcessor implements results transformation into States, observable configuration and cleanup
+    * New StateProcessor subscribes to Action Processor outputs
+    * New StateProcessor contains Result Reducer
+    *
+    * New StateController class connects ActionsProcessor and StateProcessor uniquely.
+    * From the outside New StateController declares only Actions and ViewStates, not ActionsProcessors, StateProcessors and Reducers
+    * */
     private val viewStatesObservable: Observable<VS> by lazy {
         actionsObserver
             .compose(actionProcessor)
-            .scan<VS>(viewState, reducer::reduce)
             .distinctUntilChanged()
+            .replay(1)
+            .autoConnect(0)
+
+
+
+
+            .scan<VS>(viewState, reducer::reduce)
+            /*this could be decompose into few observers, each one doing exactly on job (scan, savestate, observe)*/
             .doOnNext { state ->
                 if (state.isSavable) {
                     savedStateHandle.set(VIEW_STATE_KEY, reducer::fold)
-                    viewState = state
                 }
+                viewState = state
             }
-            .replay(1)
-            .autoConnect(0)
+
+    }
+
+    override fun onCleared() {
+        disposable.dispose()
+        super.onCleared()
     }
 
     override fun init(render: (VS) -> Unit): Disposable {
@@ -54,10 +78,6 @@ class MviViewModel<
         actionsSource.accept(action)
     }
 
-    override fun onCleared() {
-        disposable.dispose()
-        super.onCleared()
-    }
 
     companion object {
         private const val VIEW_STATE_KEY = "ViewStateKey"

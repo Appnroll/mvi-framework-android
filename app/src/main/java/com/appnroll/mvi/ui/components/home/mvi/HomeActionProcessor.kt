@@ -6,6 +6,7 @@ import com.appnroll.mvi.common.SchedulersProvider
 import com.appnroll.mvi.ui.base.mvi.createActionProcessor
 import com.appnroll.mvi.ui.base.mvi.onCompleteSafe
 import com.appnroll.mvi.ui.base.mvi.onNextSafe
+import com.appnroll.mvi.ui.components.home.HomeViewState
 import com.appnroll.mvi.ui.components.home.mvi.HomeAction.AddTaskAction
 import com.appnroll.mvi.ui.components.home.mvi.HomeAction.DeleteCompletedTasksAction
 import com.appnroll.mvi.ui.components.home.mvi.HomeAction.LoadTasksAction
@@ -21,10 +22,11 @@ import io.reactivex.Observable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinComponent {
 
-    private val schedulersProvider: SchedulersProvider by inject()
-    private val taskRepository: TaskRepository by inject()
+class HomeActionProcessor(
+    private val taskRepository: TaskRepository,
+    schedulersProvider: SchedulersProvider
+) : MviActionsProcessor<HomeAction, HomeResult>() {
 
     override fun getActionProcessors(shared: Observable<HomeAction>) = listOf(
         shared.connect(loadTasksActionProcessor),
@@ -68,14 +70,15 @@ class HomeActionProcessor: MviActionsProcessor<HomeAction, HomeResult>(), KoinCo
         onCompleteSafe()
     }
 
-    private val deletedCompletedTasksActionProcessor = createActionProcessor<DeleteCompletedTasksAction, HomeResult>(
-        schedulersProvider,
-        { InProgressResult},
-        { t -> ErrorResult(t) }
-    ) {
-        val doneTasks = taskRepository.getAllDoneTasks()
-        taskRepository.delete(doneTasks)
-        onNextSafe(DeleteCompletedTasksResult(doneTasks))
-        onCompleteSafe()
-    }
+    private val deletedCompletedTasksActionProcessor =
+        createActionProcessor<DeleteCompletedTasksAction, HomeResult>(
+            schedulersProvider,
+            { InProgressResult },
+            { t -> ErrorResult(t) }
+        ) {
+            val doneTasks = taskRepository.getAllDoneTasks()
+            taskRepository.delete(doneTasks)
+            onNextSafe(DeleteCompletedTasksResult(doneTasks))
+            onCompleteSafe()
+        }
 }

@@ -10,7 +10,7 @@ interface MviViewState : Parcelable {
     val isSavable: Boolean
 }
 
-interface MviResultReducer<R : MviResult, S : MviViewState> {
+interface MviReducer<R : MviResult, S : MviViewState> {
     fun default(): S
     fun reduce(current: S, result: R): S
     fun fold(current: S): S? = current

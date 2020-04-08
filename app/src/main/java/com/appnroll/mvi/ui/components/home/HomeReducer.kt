@@ -1,9 +1,8 @@
 package com.appnroll.mvi.ui.components.home
 
-import com.appnroll.mvi.ui.base.mvi.MviResultReducer
+import com.appnroll.mvi.ui.base.mvi.MviReducer
 import com.appnroll.mvi.ui.base.mvi.ViewStateEmptyEvent
 import com.appnroll.mvi.ui.base.mvi.ViewStateErrorEvent
-import com.appnroll.mvi.ui.components.home.HomeViewState.Companion
 import com.appnroll.mvi.ui.components.home.mvi.HomeResult
 import com.appnroll.mvi.ui.components.home.mvi.HomeResult.AddTaskResult
 import com.appnroll.mvi.ui.components.home.mvi.HomeResult.DeleteCompletedTasksResult
@@ -12,8 +11,8 @@ import com.appnroll.mvi.ui.components.home.mvi.HomeResult.InProgressResult
 import com.appnroll.mvi.ui.components.home.mvi.HomeResult.LoadTasksResult
 import com.appnroll.mvi.ui.components.home.mvi.HomeResult.UpdateTaskResult
 
-class HomeViewResultReducer :
-    MviResultReducer<HomeResult, HomeViewState> {
+class HomeReducer :
+    MviReducer<HomeResult, HomeViewState> {
     override fun reduce(current: HomeViewState, result: HomeResult): HomeViewState {
         return when (result) {
             is InProgressResult -> reduce(current, result)
@@ -25,9 +24,8 @@ class HomeViewResultReducer :
         }
     }
 
-    override fun default(): HomeViewState {
-        return HomeViewState.default()
-    }
+    override fun default(): HomeViewState =
+        HomeViewState(false, null, null, null)
 
     private fun reduce(state: HomeViewState, result: InProgressResult) =
         state.copy(

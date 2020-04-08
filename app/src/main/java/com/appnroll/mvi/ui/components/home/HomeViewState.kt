@@ -35,8 +35,4 @@ data class HomeViewState(
     fun updateTask(taskId: Long, isDone: Boolean): HomeAction? {
         return UpdateTaskAction(taskId, isDone)
     }
-
-    companion object {
-        fun default() = HomeViewState(false, null, null, null)
-    }
 }
