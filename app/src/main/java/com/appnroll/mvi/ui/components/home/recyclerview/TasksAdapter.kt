@@ -1,10 +1,7 @@
 package com.appnroll.mvi.ui.components.home.recyclerview
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.DiffUtil.Callback
 import androidx.recyclerview.widget.RecyclerView
-import com.appnroll.mvi.ui.model.Task
 import com.appnroll.mvi.utils.update
 
 class TasksAdapter(

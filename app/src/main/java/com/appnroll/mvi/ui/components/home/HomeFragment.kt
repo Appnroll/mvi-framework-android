@@ -7,57 +7,44 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.observe
 import com.appnroll.mvi.R
-import com.appnroll.mvi.ui.base.mvi.MviStateController
-import com.appnroll.mvi.utils.mviStateProcessor
-import com.appnroll.mvi.ui.components.home.mvi.HomeAction
+import com.appnroll.mvi.ui.components.home.mvi.HomeFlowController
+import com.appnroll.mvi.ui.components.home.mvi.state.HomeViewState
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
-import com.appnroll.mvi.utils.whenStarted
-import com.appnroll.mvi.utils.whenStopped
+import com.appnroll.mvi.utils.mviController
 import kotlinx.android.synthetic.main.fragment_home.*
 
-
 class HomeFragment : Fragment() {
-    private val homeStateController: MviStateController<HomeAction, HomeViewState> by mviStateProcessor(ViewModelName)
+    private val homeFlowController by mviController<HomeFlowController>()
 
     private val tasksAdapter = TasksAdapter { taskId, isChecked ->
-        homeStateController.accept { updateTask(taskId, isChecked) }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        whenStarted {
-            val disposable = homeStateController.init(::render)
-            whenStopped {
-                disposable.dispose()
-            }
-
-            homeStateController.accept { loadDataIfNeeded() }
-        }
+        homeFlowController.accept { updateTask(taskId, isChecked) }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initTasksRecyclerView()
+        homeFlowController.apply {
+            state.asLiveData().observe(viewLifecycleOwner, ::render)
+            homeFlowController.accept { loadDataIfNeeded() }
+        }
+
+        tasksRecyclerView.adapter = tasksAdapter
 
         addTaskButton.setOnClickListener {
-            homeStateController.accept { addTask(newTaskInput.text.toString()) }
+            homeFlowController.accept { addTask(newTaskInput.text.toString()) }
         }
 
         deleteCompletedTasksButton.setOnClickListener {
-            homeStateController.accept { deleteCompletedTasks() }
+            homeFlowController.accept { deleteCompletedTasks() }
         }
     }
 
@@ -67,9 +54,9 @@ class HomeFragment : Fragment() {
             newTaskInput.isEnabled = !inProgress
             addTaskButton.isEnabled = !inProgress
 
-            deleteCompletedTasksButton.isEnabled = tasks?.find { it.isDone } != null
+            deleteCompletedTasksButton.isEnabled = tasks.orEmpty().any { it.isDone }
 
-            viewState.tasks?.let { newTasks ->
+            tasks?.let { newTasks ->
                 tasksAdapter.tasks = newTasks
             }
 
@@ -81,16 +68,5 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun initTasksRecyclerView() {
-        tasksRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        tasksRecyclerView.overScrollMode = View.OVER_SCROLL_NEVER
-        tasksRecyclerView.adapter = tasksAdapter
-    }
-
-    companion object {
-        const val ViewModelName = "viewmodel.home"
     }
 }

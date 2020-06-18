@@ -1,17 +1,16 @@
 package com.appnroll.mvi.utils
 
+import android.os.Bundle
 import androidx.savedstate.SavedStateRegistryOwner
-import com.appnroll.mvi.ui.base.mvi.MviAction
-import com.appnroll.mvi.ui.base.mvi.MviStateController
-import com.appnroll.mvi.ui.base.mvi.MviViewModel
-import com.appnroll.mvi.ui.base.mvi.MviViewState
-import com.appnroll.mvi.ui.base.mvi.stateController
+import com.appnroll.mvi.common.mvi.MviFlowController
 import org.koin.androidx.viewmodel.ext.android.getStateViewModel
-import org.koin.core.qualifier.named
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
 
-fun <A : MviAction, S : MviViewState> SavedStateRegistryOwner.mviStateProcessor(viewModelName: String):
-        Lazy<MviStateController<A, S>> = lazy {
-    getStateViewModel<MviViewModel<A, *, S>>(
-        qualifier = named(viewModelName)
-    ).stateController
+inline fun <reified T : MviFlowController<*, *, *>> SavedStateRegistryOwner.mviController(
+    qualifier: Qualifier? = null,
+    bundle: Bundle? = null,
+    noinline parameters: ParametersDefinition? = null
+): Lazy<T> {
+    return lazy { getStateViewModel(T::class, qualifier, bundle, parameters) }
 }

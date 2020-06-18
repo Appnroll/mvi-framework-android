@@ -6,6 +6,11 @@ import kotlinx.android.parcel.RawValue
 import java.util.concurrent.atomic.AtomicBoolean
 
 
+/**
+ * TODO: this probably could be cleaned up
+ *
+ * */
+
 @Parcelize
 data class ViewStateEvent<T : Parcelable>(
     val payload: T,
