@@ -10,14 +10,14 @@ import com.appnroll.mvi.TestAction.TestAction2
 import com.appnroll.mvi.TestResult.TestResult1
 import com.appnroll.mvi.TestResult.TestResult2
 import com.appnroll.mvi.TestResult.TestResult3
-import com.appnroll.mvi.common.mvi.MviFlowController
+import com.appnroll.mvi.common.mvi.MviController
 import com.appnroll.mvi.common.mvi.model.MviAction
 import com.appnroll.mvi.common.mvi.model.MviResult
 import com.appnroll.mvi.common.mvi.model.mviProcessor
-import com.appnroll.mvi.common.mvi.model.modelControllerOf
-import com.appnroll.mvi.common.mvi.ui.stateControllerOf
-import com.appnroll.mvi.common.mvi.ui.MviReducer
-import com.appnroll.mvi.common.mvi.ui.MviViewState
+import com.appnroll.mvi.common.mvi.modelControllerOf
+import com.appnroll.mvi.common.mvi.state.stateControllerOf
+import com.appnroll.mvi.common.mvi.state.MviStateReducer
+import com.appnroll.mvi.common.mvi.state.MviViewState
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -82,9 +82,9 @@ data class TestViewState(
     fun testAction2() = TestAction2
 }
 
-class TestFlowController(
+class TestController(
     savedStateHandle: SavedStateHandle
-) : MviFlowController<TestAction, TestResult, TestViewState>(
+) : MviController<TestAction, TestResult, TestViewState>(
     savedStateHandle = savedStateHandle,
     modelController = modelControllerOf { action: TestAction ->
         //processors kept in place for clarity
@@ -106,11 +106,11 @@ class TestFlowController(
             is TestAction2 -> logicProcessorB(action)
         }
     },
-    stateControllerBuilder = { savedState ->
+    stateProcessingFlow = { savedState ->
         stateControllerOf(
             initial = savedState,
-            reducer = object :
-                MviReducer<TestResult, TestViewState> {
+            stateReducer = object :
+                MviStateReducer<TestResult, TestViewState> {
                 override fun default() = TestViewState()
 
                 override fun TestViewState.reduce(result: TestResult): TestViewState {
@@ -145,7 +145,7 @@ class MviFrameworkTest {
 
     @Test
     fun test3() {
-        val mviFlowController = TestFlowController(SavedStateHandle())
+        val mviFlowController = TestController(SavedStateHandle())
 
         runBlocking {
             launch(Dispatchers.Default) {

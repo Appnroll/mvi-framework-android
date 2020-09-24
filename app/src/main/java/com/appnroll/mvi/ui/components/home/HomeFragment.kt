@@ -10,17 +10,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.observe
 import com.appnroll.mvi.R
-import com.appnroll.mvi.ui.components.home.mvi.HomeFlowController
+import com.appnroll.mvi.ui.components.home.mvi.HomeViewModel
 import com.appnroll.mvi.ui.components.home.mvi.state.HomeViewState
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
-import com.appnroll.mvi.utils.mviController
 import kotlinx.android.synthetic.main.fragment_home.*
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 class HomeFragment : Fragment() {
-    private val homeFlowController by mviController<HomeFlowController>()
+
+    private val homeViewModel: HomeViewModel by stateViewModel()
+    private val homeMviController by lazy { homeViewModel.homeMviController }
 
     private val tasksAdapter = TasksAdapter { taskId, isChecked ->
-        homeFlowController.accept { updateTask(taskId, isChecked) }
+        homeMviController.accept { updateTask(taskId, isChecked) }
     }
 
     override fun onCreateView(
@@ -32,19 +34,19 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeFlowController.apply {
+        homeMviController.apply {
             state.asLiveData().observe(viewLifecycleOwner, ::render)
-            homeFlowController.accept { loadDataIfNeeded() }
+            accept { loadDataIfNeeded() }
         }
 
         tasksRecyclerView.adapter = tasksAdapter
 
         addTaskButton.setOnClickListener {
-            homeFlowController.accept { addTask(newTaskInput.text.toString()) }
+            homeMviController.accept { addTask(newTaskInput.text.toString()) }
         }
 
         deleteCompletedTasksButton.setOnClickListener {
-            homeFlowController.accept { deleteCompletedTasks() }
+            homeMviController.accept { deleteCompletedTasks() }
         }
     }
 

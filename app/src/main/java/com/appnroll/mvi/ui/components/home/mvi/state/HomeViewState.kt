@@ -1,6 +1,6 @@
 package com.appnroll.mvi.ui.components.home.mvi.state
 
-import com.appnroll.mvi.common.mvi.ui.MviViewState
+import com.appnroll.mvi.common.mvi.state.MviViewState
 import com.appnroll.mvi.ui.base.mvi.ViewStateEmptyEvent
 import com.appnroll.mvi.ui.base.mvi.ViewStateErrorEvent
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction

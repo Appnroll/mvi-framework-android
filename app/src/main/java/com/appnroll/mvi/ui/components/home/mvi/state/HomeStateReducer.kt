@@ -1,6 +1,6 @@
 package com.appnroll.mvi.ui.components.home.mvi.state
 
-import com.appnroll.mvi.common.mvi.ui.MviReducer
+import com.appnroll.mvi.common.mvi.state.MviStateReducer
 import com.appnroll.mvi.ui.base.mvi.ViewStateEmptyEvent
 import com.appnroll.mvi.ui.base.mvi.ViewStateErrorEvent
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult
@@ -11,10 +11,10 @@ import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.InProgressResult
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.LoadTasksResult
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.UpdateTaskResult
 
-class HomeReducer :
-    MviReducer<HomeResult, HomeViewState> {
+class HomeStateReducer : MviStateReducer<HomeResult, HomeViewState> {
+
     override fun HomeViewState.reduce(result: HomeResult): HomeViewState {
-        return when (result) {
+        val newResult = when (result) {
             is InProgressResult -> reduce(result)
             is ErrorResult -> reduce(result)
             is LoadTasksResult -> reduce(result)
@@ -22,14 +22,15 @@ class HomeReducer :
             is UpdateTaskResult -> reduce(result)
             is DeleteCompletedTasksResult -> reduce(result)
         }
+        return newResult
     }
 
     override fun default(): HomeViewState =
         HomeViewState(
-            false,
-            null,
-            null,
-            null
+            inProgress = false,
+            tasks = null,
+            newTaskAdded = null,
+            error = null
         )
 
     private fun HomeViewState.reduce(@Suppress("UNUSED_PARAMETER") result: InProgressResult) =

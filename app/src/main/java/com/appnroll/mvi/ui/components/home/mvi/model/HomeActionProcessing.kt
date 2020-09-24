@@ -1,6 +1,7 @@
 package com.appnroll.mvi.ui.components.home.mvi.model
 
-import com.appnroll.mvi.common.mvi.model.mviProcessor
+import com.appnroll.mvi.common.mvi.model.MviActionProcessingFlow
+import com.appnroll.mvi.common.mvi.model.MviProcessor
 import com.appnroll.mvi.data.usecases.AddTaskUseCase
 import com.appnroll.mvi.data.usecases.DeleteTasksUseCase
 import com.appnroll.mvi.data.usecases.GetAllDoneTasksUseCase
@@ -20,12 +21,31 @@ import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.UpdateTaskResult
 import com.appnroll.mvi.ui.model.Task
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import org.koin.core.context.KoinContextHandler
 
-val loadTasksActionProcessor = mviProcessor { _: LoadTasksAction ->
-    val getAllTasksUseCase: GetAllTasksUseCase = KoinContextHandler.get().get()
+class HomeActionProcessingFlow(
+    private val loadTasksActionProcessor: LoadTasksActionProcessor,
+    private val addTaskActionProcessor: AddTaskActionProcessor,
+    private val updateTaskActionProcessor: UpdateTaskActionProcessor,
+    private val deleteCompletedTasksActionProcessor: DeleteCompletedTasksActionProcessor
+) : MviActionProcessingFlow<HomeAction, HomeResult>() {
 
-    flow {
+    override fun getProcessor(action: HomeAction) =
+        when (action) {
+            is LoadTasksAction -> loadTasksActionProcessor(action)
+            is AddTaskAction -> addTaskActionProcessor(action)
+            is UpdateTaskAction -> updateTaskActionProcessor(action)
+            is DeleteCompletedTasksAction -> deleteCompletedTasksActionProcessor(action)
+        }
+}
+
+/**
+ * Processors:
+ */
+class LoadTasksActionProcessor(
+    private val getAllTasksUseCase: GetAllTasksUseCase
+): MviProcessor<LoadTasksAction, HomeResult> {
+
+    override fun invoke(action: LoadTasksAction) = flow {
         emit(InProgressResult)
         emit(LoadTasksResult(getAllTasksUseCase()))
     }.catch {
@@ -33,10 +53,11 @@ val loadTasksActionProcessor = mviProcessor { _: LoadTasksAction ->
     }
 }
 
-val addTaskActionProcessor = mviProcessor { action: AddTaskAction ->
-    val addTaskUseCase: AddTaskUseCase = KoinContextHandler.get().get()
+class AddTaskActionProcessor(
+    private val addTaskUseCase: AddTaskUseCase
+) : MviProcessor<AddTaskAction, HomeResult> {
 
-    flow {
+    override fun invoke(action: AddTaskAction) = flow {
         emit(InProgressResult)
 
         val newTask = addTaskUseCase(Task(0, action.taskContent, false))
@@ -46,11 +67,12 @@ val addTaskActionProcessor = mviProcessor { action: AddTaskAction ->
     }
 }
 
-val updateTaskActionProcessor = mviProcessor { action: UpdateTaskAction ->
-    val getTaskUseCase: GetTaskUseCase = KoinContextHandler.get().get()
-    val updateTaskUseCase: UpdateTaskUseCase = KoinContextHandler.get().get()
+class UpdateTaskActionProcessor(
+    private val getTaskUseCase: GetTaskUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase
+): MviProcessor<UpdateTaskAction, HomeResult> {
 
-    flow {
+    override fun invoke(action: UpdateTaskAction) = flow {
         emit(InProgressResult)
 
         val task = getTaskUseCase(action.taskId)?.copy(isDone = action.isDone)
@@ -66,10 +88,12 @@ val updateTaskActionProcessor = mviProcessor { action: UpdateTaskAction ->
     }
 }
 
-val deletedCompletedTasksActionProcessor = mviProcessor { _: DeleteCompletedTasksAction ->
-    val getAllDoneTasksUseCase: GetAllDoneTasksUseCase = KoinContextHandler.get().get()
-    val deleteTasksUseCase: DeleteTasksUseCase = KoinContextHandler.get().get()
-    flow {
+class DeleteCompletedTasksActionProcessor(
+    private val getAllDoneTasksUseCase: GetAllDoneTasksUseCase,
+    private val deleteTasksUseCase: DeleteTasksUseCase
+): MviProcessor<DeleteCompletedTasksAction, HomeResult> {
+
+    override fun invoke(action: DeleteCompletedTasksAction) = flow {
         emit(InProgressResult)
 
         val doneTasks = getAllDoneTasksUseCase()
