@@ -27,7 +27,7 @@ val loadTasksActionProcessor = mviProcessor { _: LoadTasksAction ->
 
     flow {
         emit(InProgressResult)
-        emit(LoadTasksResult(getAllTasksUseCase(Unit)))
+        emit(LoadTasksResult(getAllTasksUseCase()))
     }.catch {
         emit(ErrorResult(it))
     }
@@ -72,7 +72,7 @@ val deletedCompletedTasksActionProcessor = mviProcessor { _: DeleteCompletedTask
     flow {
         emit(InProgressResult)
 
-        val doneTasks = getAllDoneTasksUseCase(Unit)
+        val doneTasks = getAllDoneTasksUseCase()
         deleteTasksUseCase(doneTasks)
         emit(DeleteCompletedTasksResult(doneTasks))
     }.catch {

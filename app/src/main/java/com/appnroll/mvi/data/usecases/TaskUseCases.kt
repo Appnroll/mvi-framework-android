@@ -1,25 +1,22 @@
+@file:Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+
 package com.appnroll.mvi.data.usecases
 
+import com.appnroll.mvi.common.SuspendableUseCase0
+import com.appnroll.mvi.common.SuspendableUseCase1
+import com.appnroll.mvi.common.SuspendableUseCase1n
 import com.appnroll.mvi.data.room.dao.TaskDao
 import com.appnroll.mvi.ui.model.Task
 import com.appnroll.mvi.ui.model.toTask
 import com.appnroll.mvi.ui.model.toTaskEntity
 
-/**
- * Interface is needed as we are not able to use suspend function as a parent
- * interface SampleUseCase: suspend () -> Unit
- */
-interface SuspendableUseCase<A, R> {
 
-    suspend operator fun invoke(argument: A): R
-}
-
-interface AddTaskUseCase: SuspendableUseCase<Task, Task>
-interface GetTaskUseCase: SuspendableUseCase<Long, Task?>
-interface GetAllTasksUseCase: SuspendableUseCase<Unit, List<Task>>
-interface GetAllDoneTasksUseCase: SuspendableUseCase<Unit, List<Task>>
-interface UpdateTaskUseCase: SuspendableUseCase<Task, Unit>
-interface DeleteTasksUseCase: SuspendableUseCase<List<Task>, Unit>
+interface AddTaskUseCase: SuspendableUseCase1<Task, Task>
+interface GetTaskUseCase: SuspendableUseCase1<Long, Task?>
+interface GetAllTasksUseCase: SuspendableUseCase0<List<Task>>
+interface GetAllDoneTasksUseCase: SuspendableUseCase0<List<Task>>
+interface UpdateTaskUseCase: SuspendableUseCase1n<Task>
+interface DeleteTasksUseCase: SuspendableUseCase1n<List<Task>>
 
 class AddTaskUseCaseImpl(
     private val taskDao: TaskDao
@@ -47,7 +44,7 @@ class GetAllTasksUseCaseImpl(
     private val taskDao: TaskDao
 ): GetAllTasksUseCase {
 
-    override suspend fun invoke(argument: Unit): List<Task> {
+    override suspend fun invoke(): List<Task> {
         return taskDao
             .getAll()
             .map { it.toTask() }
@@ -58,7 +55,7 @@ class GetAllDoneTasksUseCaseImpl(
     private val taskDao: TaskDao
 ): GetAllDoneTasksUseCase {
 
-    override suspend fun invoke(argument: Unit): List<Task> {
+    override suspend fun invoke(): List<Task> {
         return taskDao
             .getAllDone()
             .map { it.toTask() }
@@ -69,7 +66,7 @@ class UpdateTaskUseCaseImpl(
     private val taskDao: TaskDao
 ): UpdateTaskUseCase {
 
-    override suspend fun invoke(task: Task): Unit {
+    override suspend fun invoke(task: Task) {
         taskDao.update(task.toTaskEntity())
     }
 }
@@ -78,7 +75,7 @@ class DeleteTasksUseCaseImpl(
     private val taskDao: TaskDao
 ): DeleteTasksUseCase {
 
-    override suspend fun invoke(tasks: List<Task>): Unit {
+    override suspend fun invoke(tasks: List<Task>) {
         taskDao
             .delete(tasks.map { it.toTaskEntity() })
     }
