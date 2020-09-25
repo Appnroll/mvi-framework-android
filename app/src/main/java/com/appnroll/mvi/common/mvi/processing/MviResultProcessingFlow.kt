@@ -15,6 +15,11 @@ open class MviResultProcessingFlow<R : MviResult, VS : MviViewState> private con
     private val stateFlow: MutableStateFlow<VS>
 ) : Flow<VS> by stateFlow {
 
+    /**
+     * This constructor was added because `stateFlow` field needs to be initialized in constructor
+     * (because it is used in the delegation) but it should not be possible to override this field
+     * when creating class object - that is why primary constructor is private.
+     */
     constructor(
         mviViewStateCache: MviViewStateCache<VS>,
         mviResultReducer: MviResultReducer<R, VS>

@@ -20,9 +20,15 @@ import kotlin.reflect.typeOf
 * */
 open class MviActionProcessingFlow<A : Any, R> private constructor(
     mviActionProcessor: MviActionProcessor<A, R>,
-    private val actionChannel: Channel<A>
-) : Flow<R> by actionChannel.receiveAsFlow().asProcessingFlow(mviActionProcessor) {
+    private val actionChannel: Channel<A>,
+    private val resultFlow: Flow<R> = actionChannel.receiveAsFlow().asProcessingFlow(mviActionProcessor)
+) : Flow<R> by resultFlow {
 
+    /**
+     * This constructor was added because `resultFlow` field needs to be initialized in constructor
+     * (because it is used in the delegation) but it should not be possible to override this field
+     * when creating class object - that is why primary constructor is private.
+     */
     constructor(
         mviActionProcessor: MviActionProcessor<A, R>
     ) : this(
