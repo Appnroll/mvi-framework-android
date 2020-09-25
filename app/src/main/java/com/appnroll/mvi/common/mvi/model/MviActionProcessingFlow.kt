@@ -11,25 +11,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 * Logic Controller
 * */
 open class MviActionProcessingFlow<A, R>(
-    mviActionProcessor: MviActionProcessor<A, R>
-) : Flow<R> /* TODO: add "by resultFlow" */ {
-
-    private val actionChannel = Channel<A>(Channel.UNLIMITED)
-    private val resultFlow = actionChannel
-        .receiveAsFlow()
-        .asProcessingFlow(mviActionProcessor)
+    mviActionProcessor: MviActionProcessor<A, R>,
+    private val actionChannel: Channel<A> = Channel(Channel.UNLIMITED),
+    private val resultFlow: Flow<R> = actionChannel.receiveAsFlow().asProcessingFlow(mviActionProcessor)
+) : Flow<R> by resultFlow {
 
     suspend fun accept(action: A) {
         actionChannel.send(action)
     }
-
-    @InternalCoroutinesApi
-    override suspend fun collect(collector: FlowCollector<R>) {
-        resultFlow.collect(collector)
-    }
 }
-
-/*
-* Logic Processor
-* */
-interface MviActionProcessor<A, R> : (A) -> Flow<R>
