@@ -53,7 +53,7 @@ class HomeMviController(
 
 class HomeActionProcessingFlow(
     homeActionProcessor: HomeActionProcessor
-): MviActionProcessingFlow<HomeAction, HomeResult>(
+) : MviActionProcessingFlow<HomeAction, HomeResult>(
     mviActionProcessor = homeActionProcessor
 )
 
@@ -67,8 +67,7 @@ class HomeStateProcessingFlow(
 
 class HomeViewStateCache(
     savedStateHandle: SavedStateHandle
-): MviViewStateCacheImpl<HomeViewState>(
+) : MviViewStateCacheImpl<HomeViewState>(
     key = "HomeViewStateKey",
     savedStateHandle = savedStateHandle
 )
-

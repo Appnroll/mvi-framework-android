@@ -20,8 +20,9 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
 ) {
     val viewStatesFlow: Flow<VS> = mviStateProcessingFlow
 
-   init {
-        mviActionProcessingFlow.onEach { mviStateProcessingFlow.accept(it) }.launchIn(coroutineScope)
+    init {
+        mviActionProcessingFlow.onEach { mviStateProcessingFlow.accept(it) }
+            .launchIn(coroutineScope)
         mviStateProcessingFlow.savable
             .onEach { mviViewStateCache.set(it) }
             .launchIn(coroutineScope)

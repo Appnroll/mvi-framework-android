@@ -5,8 +5,7 @@ import com.appnroll.mvi.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
-
-class MviApp: Application() {
+class MviApp : Application() {
 
     override fun onCreate() {
         super.onCreate()

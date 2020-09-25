@@ -1,6 +1,5 @@
 package com.appnroll.mvi.common
 
-
 /**
  * Interface is needed as we are not able to use suspend function as a parent
  * interface SampleUseCase: suspend () -> Unit

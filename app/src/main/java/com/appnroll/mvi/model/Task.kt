@@ -9,7 +9,7 @@ data class Task(
     val id: Long,
     val content: String,
     val isDone: Boolean
-): Parcelable
+) : Parcelable
 
 fun Task.toTaskEntity() = TaskEntity(
     id,

@@ -32,4 +32,4 @@ open class MviActionProcessingFlow<A, R>(
 /*
 * Logic Processor
 * */
-interface MviActionProcessor<A, R>: (A) -> Flow<R>
+interface MviActionProcessor<A, R> : (A) -> Flow<R>

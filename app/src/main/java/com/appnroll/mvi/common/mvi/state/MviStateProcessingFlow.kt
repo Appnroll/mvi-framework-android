@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.mapNotNull
 
 @Suppress("EXPERIMENTAL_API_USAGE")
-open class MviStateProcessingFlow<R: MviResult, VS: MviViewState>(
+open class MviStateProcessingFlow<R : MviResult, VS : MviViewState>(
     mviViewStateCache: MviViewStateCache<VS>,
     private val mviStateReducer: MviStateReducer<R, VS>
-): Flow<VS> /* TODO: add by stateFlow */ {
+) : Flow<VS> /* TODO: add by stateFlow */ {
 
     private val stateFlow = MutableStateFlow(mviViewStateCache.get() ?: mviStateReducer.default())
     val savable: Flow<VS> = stateFlow

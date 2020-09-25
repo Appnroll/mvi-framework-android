@@ -55,7 +55,7 @@ class HomeActionProcessor(
 
 class LoadTasksActionProcessor(
     private val getAllTasksUseCase: GetAllTasksUseCase
-): MviActionProcessor<LoadTasksAction, HomeResult> {
+) : MviActionProcessor<LoadTasksAction, HomeResult> {
 
     override fun invoke(action: LoadTasksAction) = flow {
         emit(InProgressResult)
@@ -82,7 +82,7 @@ class AddTaskActionProcessor(
 class UpdateTaskActionProcessor(
     private val getTaskUseCase: GetTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase
-): MviActionProcessor<UpdateTaskAction, HomeResult> {
+) : MviActionProcessor<UpdateTaskAction, HomeResult> {
 
     override fun invoke(action: UpdateTaskAction) = flow {
         emit(InProgressResult)
@@ -103,7 +103,7 @@ class UpdateTaskActionProcessor(
 class DeleteCompletedTasksActionProcessor(
     private val getAllDoneTasksUseCase: GetAllDoneTasksUseCase,
     private val deleteTasksUseCase: DeleteTasksUseCase
-): MviActionProcessor<DeleteCompletedTasksAction, HomeResult> {
+) : MviActionProcessor<DeleteCompletedTasksAction, HomeResult> {
 
     override fun invoke(action: DeleteCompletedTasksAction) = flow {
         emit(InProgressResult)

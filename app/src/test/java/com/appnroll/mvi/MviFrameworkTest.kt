@@ -87,7 +87,7 @@ class TestController(
 ) : MviController<TestAction, TestResult, TestViewState>(
     savedStateHandle = savedStateHandle,
     modelController = modelControllerOf { action: TestAction ->
-        //processors kept in place for clarity
+        // processors kept in place for clarity
         val logicProcessorA =
             mviProcessor { action1: TestAction1 ->
                 flow { delay(200); emit(TestResult1) }

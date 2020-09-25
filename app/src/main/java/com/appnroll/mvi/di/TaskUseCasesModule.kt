@@ -23,4 +23,3 @@ inline val Module.RepositoryModule
         factory<UpdateTaskUseCase> { UpdateTaskUseCaseImpl(get()) }
         factory<DeleteTasksUseCase> { DeleteTasksUseCaseImpl(get()) }
     }
-

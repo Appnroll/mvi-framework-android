@@ -15,7 +15,6 @@ data class ViewStateEvent<T : Parcelable>(
     override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
 
-
 /**
  * ViewState event generic class for a simple types like String, Int, Float, Double etc.
  */
@@ -29,15 +28,13 @@ data class ViewStateSimpleTypeEvent<T : Any>(
     override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
 
-
 data class ViewStateNonParcelableEvent<T>(
     val payload: T
-): SingleEvent<T>(payload) {
+) : SingleEvent<T>(payload) {
 
     override fun equals(other: Any?) = super.equals(other)
     override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
-
 
 @Parcelize
 data class ViewStateErrorEvent(
@@ -49,7 +46,6 @@ data class ViewStateErrorEvent(
     override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
 
-
 @Parcelize
 class ViewStateEmptyEvent(
     override val isConsumed: AtomicBoolean = AtomicBoolean(false)
@@ -58,7 +54,6 @@ class ViewStateEmptyEvent(
     override fun equals(other: Any?) = super.equals(other)
     override fun hashCode() = isConsumed.hashCode()
 }
-
 
 abstract class SingleEvent<T>(
     private val argument: T,
