@@ -1,7 +1,7 @@
 package com.appnroll.mvi.ui.components.home.recyclerview
 
 import androidx.recyclerview.widget.DiffUtil
-import com.appnroll.mvi.ui.model.Task
+import com.appnroll.mvi.model.Task
 
 
 class TasksDiffCallback(

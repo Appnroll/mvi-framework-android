@@ -1,17 +1,19 @@
 package com.appnroll.mvi.ui.components.home.mvi
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.appnroll.mvi.common.mvi.MviController
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult
-import com.appnroll.mvi.ui.components.home.mvi.state.HomeViewState
+import org.koin.core.KoinComponent
+import org.koin.core.inject
+import org.koin.core.parameter.parametersOf
 
+/**
+ * View model is used only to provide proper scope to MviController.
+ * MviController could be used without ViewModel with some custom scope.
+ */
 class HomeViewModel(
-    val homeMviController: MviController<HomeAction, HomeResult, HomeViewState>
-) : ViewModel() {
+    savedStateHandle: SavedStateHandle
+) : ViewModel(), KoinComponent {
 
-    init {
-        homeMviController.init(viewModelScope)
-    }
+    val homeMviController: HomeMviController by inject { parametersOf(savedStateHandle, viewModelScope) }
 }

@@ -1,16 +1,19 @@
 package com.appnroll.mvi.ui.components.home.mvi.state
 
 import com.appnroll.mvi.common.mvi.state.MviViewState
-import com.appnroll.mvi.ui.base.mvi.ViewStateEmptyEvent
-import com.appnroll.mvi.ui.base.mvi.ViewStateErrorEvent
+import com.appnroll.mvi.common.mvi.internal.ViewStateEmptyEvent
+import com.appnroll.mvi.common.mvi.internal.ViewStateErrorEvent
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction.AddTaskAction
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction.DeleteCompletedTasksAction
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction.LoadTasksAction
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction.UpdateTaskAction
-import com.appnroll.mvi.ui.model.Task
+import com.appnroll.mvi.model.Task
 import kotlinx.android.parcel.Parcelize
 
+/**
+ * Describes the UI state of the Home feature - fragment is using it to render the views
+ */
 @Parcelize
 data class HomeViewState(
     val inProgress: Boolean,

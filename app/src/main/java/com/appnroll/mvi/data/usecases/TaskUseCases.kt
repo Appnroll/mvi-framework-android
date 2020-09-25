@@ -6,9 +6,9 @@ import com.appnroll.mvi.common.SuspendableUseCase0
 import com.appnroll.mvi.common.SuspendableUseCase1
 import com.appnroll.mvi.common.SuspendableUseCase1n
 import com.appnroll.mvi.data.room.dao.TaskDao
-import com.appnroll.mvi.ui.model.Task
-import com.appnroll.mvi.ui.model.toTask
-import com.appnroll.mvi.ui.model.toTaskEntity
+import com.appnroll.mvi.model.Task
+import com.appnroll.mvi.model.toTask
+import com.appnroll.mvi.model.toTaskEntity
 
 
 interface AddTaskUseCase: SuspendableUseCase1<Task, Task>

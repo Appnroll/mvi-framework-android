@@ -156,11 +156,11 @@ class MviFrameworkTest {
                     launch { delay(1); mviFlowController.accept { testAction2() } }
                 }
 
-                mviFlowController.state.asLiveData().observeForever(::println)
-                mviFlowController.state.asLiveData().observeForever(::println)
-                mviFlowController.state.asLiveData().observeForever(::println)
-                mviFlowController.state.asLiveData().observeForever(::println)
-                mviFlowController.state.asLiveData().observeForever(::println)
+                mviFlowController.viewStatesFlow.asLiveData().observeForever(::println)
+                mviFlowController.viewStatesFlow.asLiveData().observeForever(::println)
+                mviFlowController.viewStatesFlow.asLiveData().observeForever(::println)
+                mviFlowController.viewStatesFlow.asLiveData().observeForever(::println)
+                mviFlowController.viewStatesFlow.asLiveData().observeForever(::println)
 
                 delay(2500)
                 cancel()

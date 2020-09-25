@@ -1,8 +1,8 @@
 package com.appnroll.mvi.ui.components.home.mvi.state
 
 import com.appnroll.mvi.common.mvi.state.MviStateReducer
-import com.appnroll.mvi.ui.base.mvi.ViewStateEmptyEvent
-import com.appnroll.mvi.ui.base.mvi.ViewStateErrorEvent
+import com.appnroll.mvi.common.mvi.internal.ViewStateEmptyEvent
+import com.appnroll.mvi.common.mvi.internal.ViewStateErrorEvent
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.AddTaskResult
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.DeleteCompletedTasksResult
@@ -11,10 +11,13 @@ import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.InProgressResult
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.LoadTasksResult
 import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.UpdateTaskResult
 
+/**
+ * Reducer which creates new ViewState based on the last ViewState and new Result
+ */
 class HomeStateReducer : MviStateReducer<HomeResult, HomeViewState> {
 
     override fun HomeViewState.reduce(result: HomeResult): HomeViewState {
-        val newResult = when (result) {
+        return when (result) {
             is InProgressResult -> reduce(result)
             is ErrorResult -> reduce(result)
             is LoadTasksResult -> reduce(result)
@@ -22,7 +25,6 @@ class HomeStateReducer : MviStateReducer<HomeResult, HomeViewState> {
             is UpdateTaskResult -> reduce(result)
             is DeleteCompletedTasksResult -> reduce(result)
         }
-        return newResult
     }
 
     override fun default(): HomeViewState =

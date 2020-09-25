@@ -1,15 +1,9 @@
-package com.appnroll.mvi.ui.base.mvi
+package com.appnroll.mvi.common.mvi.internal
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
 import java.util.concurrent.atomic.AtomicBoolean
-
-
-/**
- * TODO: this probably could be cleaned up
- *
- * */
 
 @Parcelize
 data class ViewStateEvent<T : Parcelable>(

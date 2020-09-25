@@ -13,43 +13,49 @@ import com.appnroll.mvi.R
 import com.appnroll.mvi.ui.components.home.mvi.HomeViewModel
 import com.appnroll.mvi.ui.components.home.mvi.state.HomeViewState
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
+import com.appnroll.mvi.common.mvi.internal.mviController
 import kotlinx.android.synthetic.main.fragment_home.*
-import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private val homeViewModel: HomeViewModel by stateViewModel()
-    private val homeMviController by lazy { homeViewModel.homeMviController }
+    /** Gets HomeViewModel instance and extract mviController from it */
+    private val homeMviController by mviController(HomeViewModel::class) { homeMviController }
 
     private val tasksAdapter = TasksAdapter { taskId, isChecked ->
+        /** send action to change tasks state (completed/not completed) */
         homeMviController.accept { updateTask(taskId, isChecked) }
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeMviController.apply {
-            state.asLiveData().observe(viewLifecycleOwner, ::render)
-            accept { loadDataIfNeeded() }
-        }
-
         tasksRecyclerView.adapter = tasksAdapter
 
+        initButtons()
+
+        /** subscribe with a render function to LifeData with viewStates */
+        homeMviController.viewStatesFlow.asLiveData().observe(viewLifecycleOwner, ::render)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        /** send action to load tasks list if list is empty */
+        homeMviController.accept { loadDataIfNeeded() }
+    }
+
+    private fun initButtons() {
         addTaskButton.setOnClickListener {
+            /** send action to add new task */
             homeMviController.accept { addTask(newTaskInput.text.toString()) }
         }
 
         deleteCompletedTasksButton.setOnClickListener {
+            /** send action to delete all completed tasks */
             homeMviController.accept { deleteCompletedTasks() }
         }
     }
 
+    /** Function which updates UI based on new viewState object receives from MviController */
     private fun render(viewState: HomeViewState) {
         with(viewState) {
             progressBar.isVisible = inProgress

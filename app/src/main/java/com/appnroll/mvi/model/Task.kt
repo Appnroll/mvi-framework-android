@@ -1,4 +1,4 @@
-package com.appnroll.mvi.ui.model
+package com.appnroll.mvi.model
 
 import android.os.Parcelable
 import com.appnroll.mvi.data.room.entities.TaskEntity

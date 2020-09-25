@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.appnroll.mvi.R
-import com.appnroll.mvi.ui.model.Task
+import com.appnroll.mvi.model.Task
 import com.appnroll.mvi.utils.inflateItem
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_task.*
