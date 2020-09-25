@@ -3,15 +3,15 @@ package com.appnroll.mvi.di
 import androidx.lifecycle.SavedStateHandle
 import com.appnroll.mvi.ui.components.home.mvi.HomeActionProcessingFlow
 import com.appnroll.mvi.ui.components.home.mvi.HomeMviController
-import com.appnroll.mvi.ui.components.home.mvi.HomeStateProcessingFlow
-import com.appnroll.mvi.ui.components.home.mvi.HomeViewModel
+import com.appnroll.mvi.ui.components.home.mvi.HomeResultProcessingFlow
+import com.appnroll.mvi.ui.components.home.HomeViewModel
 import com.appnroll.mvi.ui.components.home.mvi.HomeViewStateCache
-import com.appnroll.mvi.ui.components.home.mvi.model.AddTaskActionProcessor
-import com.appnroll.mvi.ui.components.home.mvi.model.DeleteCompletedTasksActionProcessor
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeActionProcessor
-import com.appnroll.mvi.ui.components.home.mvi.model.LoadTasksActionProcessor
-import com.appnroll.mvi.ui.components.home.mvi.model.UpdateTaskActionProcessor
-import com.appnroll.mvi.ui.components.home.mvi.state.HomeStateReducer
+import com.appnroll.mvi.ui.components.home.mvi.action.AddTaskActionProcessor
+import com.appnroll.mvi.ui.components.home.mvi.action.DeleteCompletedTasksActionProcessor
+import com.appnroll.mvi.ui.components.home.mvi.action.HomeActionProcessor
+import com.appnroll.mvi.ui.components.home.mvi.action.LoadTasksActionProcessor
+import com.appnroll.mvi.ui.components.home.mvi.action.UpdateTaskActionProcessor
+import com.appnroll.mvi.ui.components.home.mvi.result.HomeResultReducer
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
@@ -34,7 +34,7 @@ inline val Module.HomeModule
             )
         }
 
-        factory { HomeStateReducer() }
+        factory { HomeResultReducer() }
 
         factory { (savedStateHandle: SavedStateHandle) ->
             HomeViewStateCache(
@@ -43,8 +43,8 @@ inline val Module.HomeModule
         }
 
         factory { (savedStateHandle: SavedStateHandle) ->
-            HomeStateProcessingFlow(
-                homeStateReducer = get(),
+            HomeResultProcessingFlow(
+                homeResultReducer = get(),
                 homeViewStateCache = get { parametersOf(savedStateHandle) }
             )
         }
@@ -52,7 +52,7 @@ inline val Module.HomeModule
         factory { (savedStateHandle: SavedStateHandle, coroutineScope: CoroutineScope) ->
             HomeMviController(
                 homeActionProcessingFlow = get(),
-                homeStateProcessingFlow = get { parametersOf(savedStateHandle) },
+                homeResultProcessingFlow = get { parametersOf(savedStateHandle) },
                 homeViewStateCache = get { parametersOf(savedStateHandle) },
                 coroutineScope = coroutineScope
             )

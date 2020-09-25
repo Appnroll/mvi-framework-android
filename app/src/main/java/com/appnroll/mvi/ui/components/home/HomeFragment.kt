@@ -8,10 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.observe
 import com.appnroll.mvi.R
-import com.appnroll.mvi.ui.components.home.mvi.HomeViewModel
-import com.appnroll.mvi.ui.components.home.mvi.state.HomeViewState
+import com.appnroll.mvi.ui.components.home.mvi.viewstate.HomeViewState
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
-import com.appnroll.mvi.common.mvi.internal.mviController
+import com.appnroll.mvi.utils.mviController
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment(R.layout.fragment_home) {

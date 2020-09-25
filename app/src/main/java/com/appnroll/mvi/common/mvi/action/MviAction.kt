@@ -1,4 +1,4 @@
-package com.appnroll.mvi.common.mvi.model
+package com.appnroll.mvi.common.mvi.action
 
 /**
  *

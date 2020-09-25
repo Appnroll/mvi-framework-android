@@ -1,4 +1,4 @@
-package com.appnroll.mvi.common.mvi.state
+package com.appnroll.mvi.common.mvi.viewstate
 
 import android.os.Parcelable
 

@@ -1,4 +1,4 @@
-package com.appnroll.mvi.common.mvi.internal
+package com.appnroll.mvi.utils
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModel

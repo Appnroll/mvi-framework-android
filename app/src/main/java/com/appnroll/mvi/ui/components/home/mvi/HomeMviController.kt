@@ -2,14 +2,14 @@ package com.appnroll.mvi.ui.components.home.mvi
 
 import androidx.lifecycle.SavedStateHandle
 import com.appnroll.mvi.common.mvi.MviController
-import com.appnroll.mvi.common.mvi.internal.MviViewStateCacheImpl
-import com.appnroll.mvi.common.mvi.model.MviActionProcessingFlow
-import com.appnroll.mvi.common.mvi.state.MviStateProcessingFlow
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeActionProcessor
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult
-import com.appnroll.mvi.ui.components.home.mvi.state.HomeStateReducer
-import com.appnroll.mvi.ui.components.home.mvi.state.HomeViewState
+import com.appnroll.mvi.common.mvi.viewstate.MviViewStateCacheImpl
+import com.appnroll.mvi.common.mvi.action.MviActionProcessingFlow
+import com.appnroll.mvi.common.mvi.result.MviResultProcessingFlow
+import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction
+import com.appnroll.mvi.ui.components.home.mvi.action.HomeActionProcessor
+import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult
+import com.appnroll.mvi.ui.components.home.mvi.result.HomeResultReducer
+import com.appnroll.mvi.ui.components.home.mvi.viewstate.HomeViewState
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -41,12 +41,12 @@ import kotlinx.coroutines.CoroutineScope
 
 class HomeMviController(
     homeActionProcessingFlow: HomeActionProcessingFlow,
-    homeStateProcessingFlow: HomeStateProcessingFlow,
+    homeResultProcessingFlow: HomeResultProcessingFlow,
     homeViewStateCache: HomeViewStateCache,
     coroutineScope: CoroutineScope
 ) : MviController<HomeAction, HomeResult, HomeViewState>(
     mviActionProcessingFlow = homeActionProcessingFlow,
-    mviStateProcessingFlow = homeStateProcessingFlow,
+    mviResultProcessingFlow = homeResultProcessingFlow,
     mviViewStateCache = homeViewStateCache,
     coroutineScope = coroutineScope
 )
@@ -57,12 +57,12 @@ class HomeActionProcessingFlow(
     mviActionProcessor = homeActionProcessor
 )
 
-class HomeStateProcessingFlow(
-    homeStateReducer: HomeStateReducer,
+class HomeResultProcessingFlow(
+    homeResultReducer: HomeResultReducer,
     homeViewStateCache: HomeViewStateCache
-) : MviStateProcessingFlow<HomeResult, HomeViewState>(
+) : MviResultProcessingFlow<HomeResult, HomeViewState>(
     mviViewStateCache = homeViewStateCache,
-    mviStateReducer = homeStateReducer
+    mviResultReducer = homeResultReducer
 )
 
 class HomeViewStateCache(

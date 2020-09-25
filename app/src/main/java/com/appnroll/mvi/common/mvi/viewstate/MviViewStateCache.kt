@@ -1,7 +1,6 @@
-package com.appnroll.mvi.common.mvi.internal
+package com.appnroll.mvi.common.mvi.viewstate
 
 import androidx.lifecycle.SavedStateHandle
-import com.appnroll.mvi.common.mvi.state.MviViewState
 
 interface MviViewStateCache<VS : MviViewState> {
 

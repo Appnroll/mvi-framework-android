@@ -11,13 +11,13 @@ import com.appnroll.mvi.TestResult.TestResult1
 import com.appnroll.mvi.TestResult.TestResult2
 import com.appnroll.mvi.TestResult.TestResult3
 import com.appnroll.mvi.common.mvi.MviController
-import com.appnroll.mvi.common.mvi.model.MviAction
-import com.appnroll.mvi.common.mvi.model.MviResult
-import com.appnroll.mvi.common.mvi.model.mviProcessor
+import com.appnroll.mvi.common.mvi.action.MviAction
+import com.appnroll.mvi.common.mvi.result.MviResult
+import com.appnroll.mvi.common.mvi.action.mviProcessor
 import com.appnroll.mvi.common.mvi.modelControllerOf
 import com.appnroll.mvi.common.mvi.state.stateControllerOf
-import com.appnroll.mvi.common.mvi.state.MviStateReducer
-import com.appnroll.mvi.common.mvi.state.MviViewState
+import com.appnroll.mvi.common.mvi.result.MviResultReducer
+import com.appnroll.mvi.common.mvi.viewstate.MviViewState
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -110,7 +110,7 @@ class TestController(
         stateControllerOf(
             initial = savedState,
             stateReducer = object :
-                MviStateReducer<TestResult, TestViewState> {
+                MviResultReducer<TestResult, TestViewState> {
                 override fun default() = TestViewState()
 
                 override fun TestViewState.reduce(result: TestResult): TestViewState {

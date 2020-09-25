@@ -1,11 +1,11 @@
 package com.appnroll.mvi.common.mvi
 
-import com.appnroll.mvi.common.mvi.internal.MviViewStateCache
-import com.appnroll.mvi.common.mvi.model.MviAction
-import com.appnroll.mvi.common.mvi.model.MviActionProcessingFlow
-import com.appnroll.mvi.common.mvi.model.MviResult
-import com.appnroll.mvi.common.mvi.state.MviStateProcessingFlow
-import com.appnroll.mvi.common.mvi.state.MviViewState
+import com.appnroll.mvi.common.mvi.viewstate.MviViewStateCache
+import com.appnroll.mvi.common.mvi.action.MviAction
+import com.appnroll.mvi.common.mvi.action.MviActionProcessingFlow
+import com.appnroll.mvi.common.mvi.result.MviResult
+import com.appnroll.mvi.common.mvi.result.MviResultProcessingFlow
+import com.appnroll.mvi.common.mvi.viewstate.MviViewState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
@@ -14,16 +14,16 @@ import kotlinx.coroutines.launch
 
 open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
     private val mviActionProcessingFlow: MviActionProcessingFlow<A, R>,
-    private val mviStateProcessingFlow: MviStateProcessingFlow<R, VS>,
+    private val mviResultProcessingFlow: MviResultProcessingFlow<R, VS>,
     private val mviViewStateCache: MviViewStateCache<VS>,
     private val coroutineScope: CoroutineScope
 ) {
-    val viewStatesFlow: Flow<VS> = mviStateProcessingFlow
+    val viewStatesFlow: Flow<VS> = mviResultProcessingFlow
 
     init {
-        mviActionProcessingFlow.onEach { mviStateProcessingFlow.accept(it) }
+        mviActionProcessingFlow.onEach { mviResultProcessingFlow.accept(it) }
             .launchIn(coroutineScope)
-        mviStateProcessingFlow.savable
+        mviResultProcessingFlow.savable
             .onEach { mviViewStateCache.set(it) }
             .launchIn(coroutineScope)
     }
@@ -31,7 +31,7 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
     fun accept(intent: VS.() -> A?) {
         coroutineScope.launch {
             mviActionProcessingFlow.accept(
-                action = intent(mviStateProcessingFlow.current()) ?: return@launch
+                action = intent(mviResultProcessingFlow.current()) ?: return@launch
             )
         }
     }

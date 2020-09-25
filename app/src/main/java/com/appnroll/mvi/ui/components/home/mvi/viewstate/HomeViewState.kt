@@ -1,13 +1,13 @@
-package com.appnroll.mvi.ui.components.home.mvi.state
+package com.appnroll.mvi.ui.components.home.mvi.viewstate
 
-import com.appnroll.mvi.common.mvi.state.MviViewState
-import com.appnroll.mvi.common.mvi.internal.ViewStateEmptyEvent
-import com.appnroll.mvi.common.mvi.internal.ViewStateErrorEvent
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction.AddTaskAction
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction.DeleteCompletedTasksAction
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction.LoadTasksAction
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeAction.UpdateTaskAction
+import com.appnroll.mvi.common.mvi.viewstate.MviViewState
+import com.appnroll.mvi.common.mvi.viewstate.ViewStateEmptyEvent
+import com.appnroll.mvi.common.mvi.viewstate.ViewStateErrorEvent
+import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction
+import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction.AddTaskAction
+import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction.DeleteCompletedTasksAction
+import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction.LoadTasksAction
+import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction.UpdateTaskAction
 import com.appnroll.mvi.model.Task
 import kotlinx.android.parcel.Parcelize
 

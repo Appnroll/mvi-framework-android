@@ -1,20 +1,20 @@
-package com.appnroll.mvi.ui.components.home.mvi.state
+package com.appnroll.mvi.ui.components.home.mvi.result
 
-import com.appnroll.mvi.common.mvi.state.MviStateReducer
-import com.appnroll.mvi.common.mvi.internal.ViewStateEmptyEvent
-import com.appnroll.mvi.common.mvi.internal.ViewStateErrorEvent
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.AddTaskResult
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.DeleteCompletedTasksResult
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.ErrorResult
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.InProgressResult
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.LoadTasksResult
-import com.appnroll.mvi.ui.components.home.mvi.model.HomeResult.UpdateTaskResult
+import com.appnroll.mvi.common.mvi.result.MviResultReducer
+import com.appnroll.mvi.common.mvi.viewstate.ViewStateEmptyEvent
+import com.appnroll.mvi.common.mvi.viewstate.ViewStateErrorEvent
+import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.AddTaskResult
+import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.DeleteCompletedTasksResult
+import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.ErrorResult
+import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.InProgressResult
+import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.LoadTasksResult
+import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.UpdateTaskResult
+import com.appnroll.mvi.ui.components.home.mvi.viewstate.HomeViewState
 
 /**
  * Reducer which creates new ViewState based on the last ViewState and new Result
  */
-class HomeStateReducer : MviStateReducer<HomeResult, HomeViewState> {
+class HomeResultReducer : MviResultReducer<HomeResult, HomeViewState> {
 
     override fun HomeViewState.reduce(result: HomeResult): HomeViewState {
         return when (result) {
