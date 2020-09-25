@@ -2,14 +2,14 @@ package com.appnroll.mvi.ui.components.home.mvi
 
 import androidx.lifecycle.SavedStateHandle
 import com.appnroll.mvi.common.mvi.MviController
-import com.appnroll.mvi.common.mvi.viewstate.MviViewStateCacheImpl
-import com.appnroll.mvi.common.mvi.action.MviActionProcessingFlow
-import com.appnroll.mvi.common.mvi.result.MviResultProcessingFlow
-import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction
-import com.appnroll.mvi.ui.components.home.mvi.action.HomeActionProcessor
-import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult
-import com.appnroll.mvi.ui.components.home.mvi.result.HomeResultReducer
-import com.appnroll.mvi.ui.components.home.mvi.viewstate.HomeViewState
+import com.appnroll.mvi.common.mvi.utils.MviViewStateCacheImpl
+import com.appnroll.mvi.common.mvi.processing.MviActionProcessingFlow
+import com.appnroll.mvi.common.mvi.processing.MviResultProcessingFlow
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeActionProcessor
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResultReducer
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeViewState
 import kotlinx.coroutines.CoroutineScope
 
 /**

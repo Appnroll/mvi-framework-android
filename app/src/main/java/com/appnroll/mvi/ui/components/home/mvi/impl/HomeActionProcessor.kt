@@ -1,24 +1,24 @@
-package com.appnroll.mvi.ui.components.home.mvi.action
+package com.appnroll.mvi.ui.components.home.mvi.impl
 
-import com.appnroll.mvi.common.mvi.action.MviActionProcessor
+import com.appnroll.mvi.common.mvi.api.MviActionProcessor
 import com.appnroll.mvi.data.usecases.AddTaskUseCase
 import com.appnroll.mvi.data.usecases.DeleteTasksUseCase
 import com.appnroll.mvi.data.usecases.GetAllDoneTasksUseCase
 import com.appnroll.mvi.data.usecases.GetAllTasksUseCase
 import com.appnroll.mvi.data.usecases.GetTaskUseCase
 import com.appnroll.mvi.data.usecases.UpdateTaskUseCase
-import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction.AddTaskAction
-import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction.DeleteCompletedTasksAction
-import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction.LoadTasksAction
-import com.appnroll.mvi.ui.components.home.mvi.action.HomeAction.UpdateTaskAction
-import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.AddTaskResult
-import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.DeleteCompletedTasksResult
-import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.ErrorResult
-import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.InProgressResult
-import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.LoadTasksResult
-import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult.UpdateTaskResult
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction.AddTaskAction
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction.DeleteCompletedTasksAction
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction.LoadTasksAction
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction.UpdateTaskAction
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult.AddTaskResult
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult.DeleteCompletedTasksResult
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult.ErrorResult
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult.InProgressResult
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult.LoadTasksResult
+import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult.UpdateTaskResult
 import com.appnroll.mvi.model.Task
-import com.appnroll.mvi.ui.components.home.mvi.result.HomeResult
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -48,6 +48,9 @@ class HomeActionProcessor(
     }
 }
 
+/** delay processing of na action - only for test purposes */
+private const val PROCESSING_DELAY_MILS = 5000L
+
 /**
  * "Specialized" processors. Each of them is responsible for processing different action
  * and each of them depends on the UseCases. This is also a convention and it could be implemented
@@ -60,6 +63,7 @@ class LoadTasksActionProcessor(
 
     override fun invoke(action: LoadTasksAction) = flow {
         emit(InProgressResult)
+        delay(PROCESSING_DELAY_MILS)
         emit(LoadTasksResult(getAllTasksUseCase()))
     }.catch {
         emit(ErrorResult(it))
@@ -72,7 +76,7 @@ class AddTaskActionProcessor(
 
     override fun invoke(action: AddTaskAction) = flow {
         emit(InProgressResult)
-
+        delay(PROCESSING_DELAY_MILS)
         val newTask = addTaskUseCase(Task(0, action.taskContent, false))
         emit(AddTaskResult(newTask))
     }.catch {
@@ -87,7 +91,7 @@ class UpdateTaskActionProcessor(
 
     override fun invoke(action: UpdateTaskAction) = flow {
         emit(InProgressResult)
-
+        delay(PROCESSING_DELAY_MILS)
         val task = getTaskUseCase(action.taskId)?.copy(isDone = action.isDone)
         val updateTaskResult = if (task == null) {
             ErrorResult(Exception("Task with id ${action.taskId} not found in DB"))
@@ -108,7 +112,7 @@ class DeleteCompletedTasksActionProcessor(
 
     override fun invoke(action: DeleteCompletedTasksAction) = flow {
         emit(InProgressResult)
-
+        delay(PROCESSING_DELAY_MILS)
         val doneTasks = getAllDoneTasksUseCase()
         deleteTasksUseCase(doneTasks)
         emit(DeleteCompletedTasksResult(doneTasks))

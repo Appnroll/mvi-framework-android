@@ -1,6 +1,4 @@
-package com.appnroll.mvi.common.mvi.result
-
-import com.appnroll.mvi.common.mvi.viewstate.MviViewState
+package com.appnroll.mvi.common.mvi.api
 
 interface MviResultReducer<R : MviResult, VS : MviViewState> {
 

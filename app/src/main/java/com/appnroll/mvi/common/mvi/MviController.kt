@@ -1,11 +1,11 @@
 package com.appnroll.mvi.common.mvi
 
-import com.appnroll.mvi.common.mvi.viewstate.MviViewStateCache
-import com.appnroll.mvi.common.mvi.action.MviAction
-import com.appnroll.mvi.common.mvi.action.MviActionProcessingFlow
-import com.appnroll.mvi.common.mvi.result.MviResult
-import com.appnroll.mvi.common.mvi.result.MviResultProcessingFlow
-import com.appnroll.mvi.common.mvi.viewstate.MviViewState
+import com.appnroll.mvi.common.mvi.utils.MviViewStateCache
+import com.appnroll.mvi.common.mvi.api.MviAction
+import com.appnroll.mvi.common.mvi.processing.MviActionProcessingFlow
+import com.appnroll.mvi.common.mvi.api.MviResult
+import com.appnroll.mvi.common.mvi.processing.MviResultProcessingFlow
+import com.appnroll.mvi.common.mvi.api.MviViewState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn

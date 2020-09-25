@@ -1,4 +1,4 @@
-package com.appnroll.mvi.common.mvi.action
+package com.appnroll.mvi.common.mvi.api
 
 import kotlinx.coroutines.flow.Flow
 

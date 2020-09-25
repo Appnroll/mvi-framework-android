@@ -1,6 +1,6 @@
-package com.appnroll.mvi.ui.components.home.mvi.action
+package com.appnroll.mvi.ui.components.home.mvi.impl
 
-import com.appnroll.mvi.common.mvi.action.MviAction
+import com.appnroll.mvi.common.mvi.api.MviAction
 
 /**
  * Set of action which could be done in Home feature

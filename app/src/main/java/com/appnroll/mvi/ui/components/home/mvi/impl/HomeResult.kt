@@ -1,6 +1,6 @@
-package com.appnroll.mvi.ui.components.home.mvi.result
+package com.appnroll.mvi.ui.components.home.mvi.impl
 
-import com.appnroll.mvi.common.mvi.result.MviResult
+import com.appnroll.mvi.common.mvi.api.MviResult
 import com.appnroll.mvi.model.Task
 
 /**
