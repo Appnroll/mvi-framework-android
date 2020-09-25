@@ -53,6 +53,12 @@ private fun <A : Any, R> Flow<A>.asProcessingFlow(
     @Suppress("EXPERIMENTAL_API_USAGE")
     return channelFlow {
         collect { action: A ->
+            /*
+             TODO:
+              Currently only one action of the current type could be processed at once.
+              Think how we could process more then one action of the same type at once,
+              but in a way that we will have full control of the uniqueness af an action
+             */
             val currentJob = internalJobs[action::class]
             val shouldStart =
                 shouldRestart || currentJob == null || currentJob.isCompleted
