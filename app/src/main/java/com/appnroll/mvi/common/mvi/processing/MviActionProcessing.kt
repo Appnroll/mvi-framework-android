@@ -1,5 +1,6 @@
 package com.appnroll.mvi.common.mvi.processing
 
+import com.appnroll.mvi.common.mvi.api.MviAction
 import com.appnroll.mvi.common.mvi.api.MviActionProcessor
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult
@@ -7,6 +8,7 @@ import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResultReducer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
@@ -19,31 +21,30 @@ import kotlin.reflect.typeOf
 /*
 * Logic Controller
 * */
-open class MviActionProcessing<A : Any, R>(
+open class MviActionProcessing<A : MviAction, R>(
     mviActionProcessor: MviActionProcessor<A, R>
 ) {
+    private val input: Channel<A> = Channel(Channel.UNLIMITED)
+    private val output: Flow<R> = ProcessingFlow(input, mviActionProcessor)
 
-    private val inputChannel: Channel<A> = Channel(Channel.UNLIMITED)
-    private val outputFlow: Flow<R> = inputChannel.receiveAsFlow().asProcessingFlow(mviActionProcessor)
+    val resultsFlow: Flow<R> = output
 
-    suspend fun accept(action: A) = inputChannel.send(action)
-
-    fun resultsFlow(): Flow<R> = outputFlow
+    suspend fun accept(action: A) = input.send(action)
 }
-
 
 /**
  * Parallel Flow Builder
  * add description
  * */
-private fun <A : Any, R> Flow<A>.asProcessingFlow(
-    shouldRestart: Boolean = true,
-    producer: (A) -> Flow<R>
-): Flow<R> {
-    val internalJobs: HashMap<Any, Job> = hashMapOf()
-    @Suppress("EXPERIMENTAL_API_USAGE")
-    return channelFlow {
-        collect { action: A ->
+@Suppress("EXPERIMENTAL_API_USAGE")
+class ProcessingFlow<A : MviAction, R>(
+    channel: ReceiveChannel<A>,
+    producer: (A) -> Flow<R>,
+    shouldRestart: Boolean = true
+) : Flow<R> by channelFlow(
+    block = {
+        val internalJobs: HashMap<Any, Job> = hashMapOf()
+        channel.receiveAsFlow().collect { action: A ->
             /*
              TODO:
               Currently only one action of the current type could be processed at once.
@@ -53,21 +54,14 @@ private fun <A : Any, R> Flow<A>.asProcessingFlow(
             val currentJob = internalJobs[action::class]
             val shouldStart =
                 shouldRestart || currentJob == null || currentJob.isCompleted
-
             if (shouldRestart) {
                 currentJob?.cancel()
                 println("cancelling job for action: $action, isCompleted: ${currentJob?.isCompleted}, job: $currentJob")
             }
-
             if (shouldStart) {
                 val newJob = launch(Dispatchers.Default) { producer(action).collect(::send) }
                 println("starting job for action: $action, job: $newJob")
                 internalJobs[action::class] = newJob
             }
         }
-    }
-}
-
-private inline fun <A : Any, R> Flow<A>.asProcessingFlow(
-    crossinline producer: (A) -> Flow<R>
-): Flow<R> = asProcessingFlow(shouldRestart = true) { producer(it) }
+    })

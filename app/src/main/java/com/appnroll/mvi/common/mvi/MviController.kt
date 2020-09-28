@@ -18,16 +18,14 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
     private val mviViewStateCache: MviViewStateCache<VS>,
     private val coroutineScope: CoroutineScope
 ) {
-    val viewStatesFlow: Flow<VS> = mviResultProcessing.viewStatesFlow()
+    val viewStatesFlow: Flow<VS> = mviResultProcessing.viewStatesFlow
 
     init {
-        mviActionProcessing
-            .resultsFlow()
+        mviActionProcessing.resultsFlow
             .onEach { mviResultProcessing.accept(it) }
             .launchIn(coroutineScope)
 
-        mviResultProcessing
-            .savableViewStatesFlow()
+        mviResultProcessing.savableViewStatesFlow
             .onEach { mviViewStateCache.set(it) }
             .launchIn(coroutineScope)
     }
