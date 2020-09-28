@@ -13,6 +13,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
+/**
+ * Wrapper around MviActionProcessors.
+ *
+ * It consumes MviAction's {fun accept(...)} then passes it to MviActionProcessing which produces
+ * the flow of MviResult's which is available outside with a property `val resultsFlow`
+ *
+ * @param mviActionProcessor object responsible for transforming MviAction into flow of MviResults
+ */
 open class MviActionProcessing<A : MviAction, R : MviResult>(
     mviActionProcessor: MviActionProcessor<A, R>
 ) {
@@ -29,7 +37,7 @@ open class MviActionProcessing<A : MviAction, R : MviResult>(
  * add description
  * */
 @Suppress("EXPERIMENTAL_API_USAGE")
-class ProcessingFlow<A : MviAction, R : MviResult>(
+private class ProcessingFlow<A : MviAction, R : MviResult>(
     channel: ReceiveChannel<A>,
     producer: (A) -> Flow<R>,
     shouldRestart: Boolean = true // currently not used - always true

@@ -12,6 +12,17 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+/**
+ * Wrapper around whole Mvi flow: MviAction -> processing -> MviResult -> reducing -> MviViewState
+ *
+ * MviAction's are consumed with `fun accept(...)` and flow with MviViewStates is available with
+ * the property `val viewStatesFlow`
+ *
+ * @param mviActionProcessing
+ * @param mviResultProcessing
+ * @param mviViewStateCache
+ * @param coroutineScope
+ */
 open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
     private val mviActionProcessing: MviActionProcessing<A, R>,
     private val mviResultProcessing: MviResultProcessing<R, VS>,

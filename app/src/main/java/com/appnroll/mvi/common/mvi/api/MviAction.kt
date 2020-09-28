@@ -30,6 +30,9 @@ interface MviAction {
      * Having three action objects: `b1(itemId=1)`, `b2(itemId=2) and `b3(itemId=1)` and sending
      * `b1` and `b2` will cause the parallel processing of those actions - as they are both unique.
      * Sending `b3` will cancel the processing of `b1` action but `b2` will still be processing.
+     *
+     * @throws IllegalStateException if method is used with anonymous class
      */
-    fun getId(): Any = this.javaClass.simpleName
+    fun getId(): Any = this::class.qualifiedName
+        ?: throw IllegalStateException("getId() should not be used with anonymous classes")
 }
