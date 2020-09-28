@@ -1,9 +1,9 @@
 package com.appnroll.mvi.di
 
 import androidx.lifecycle.SavedStateHandle
-import com.appnroll.mvi.ui.components.home.mvi.HomeActionProcessingFlow
+import com.appnroll.mvi.ui.components.home.mvi.HomeActionProcessing
 import com.appnroll.mvi.ui.components.home.mvi.HomeMviController
-import com.appnroll.mvi.ui.components.home.mvi.HomeResultProcessingFlow
+import com.appnroll.mvi.ui.components.home.mvi.HomeResultProcessing
 import com.appnroll.mvi.ui.components.home.HomeViewModel
 import com.appnroll.mvi.ui.components.home.mvi.HomeViewStateCache
 import com.appnroll.mvi.ui.components.home.mvi.impl.AddTaskActionProcessor
@@ -29,7 +29,7 @@ inline val Module.HomeModule
         }
 
         factory {
-            HomeActionProcessingFlow(
+            HomeActionProcessing(
                 homeActionProcessor = get()
             )
         }
@@ -43,7 +43,7 @@ inline val Module.HomeModule
         }
 
         factory { (savedStateHandle: SavedStateHandle) ->
-            HomeResultProcessingFlow(
+            HomeResultProcessing(
                 homeResultReducer = get(),
                 homeViewStateCache = get { parametersOf(savedStateHandle) }
             )
@@ -51,8 +51,8 @@ inline val Module.HomeModule
 
         factory { (savedStateHandle: SavedStateHandle, coroutineScope: CoroutineScope) ->
             HomeMviController(
-                homeActionProcessingFlow = get(),
-                homeResultProcessingFlow = get { parametersOf(savedStateHandle) },
+                homeActionProcessing = get(),
+                homeResultProcessing = get { parametersOf(savedStateHandle) },
                 homeViewStateCache = get { parametersOf(savedStateHandle) },
                 coroutineScope = coroutineScope
             )

@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
@@ -18,28 +19,18 @@ import kotlin.reflect.typeOf
 /*
 * Logic Controller
 * */
-open class MviActionProcessingFlow<A : Any, R> private constructor(
-    mviActionProcessor: MviActionProcessor<A, R>,
-    private val actionChannel: Channel<A>,
-    private val resultFlow: Flow<R> = actionChannel.receiveAsFlow().asProcessingFlow(mviActionProcessor)
-) : Flow<R> by resultFlow {
+open class MviActionProcessing<A : Any, R>(
+    mviActionProcessor: MviActionProcessor<A, R>
+) {
 
-    /**
-     * This constructor was added because `resultFlow` field needs to be initialized in constructor
-     * (because it is used in the delegation) but it should not be possible to override this field
-     * when creating class object - that is why primary constructor is private.
-     */
-    constructor(
-        mviActionProcessor: MviActionProcessor<A, R>
-    ) : this(
-        mviActionProcessor = mviActionProcessor,
-        actionChannel = Channel(Channel.UNLIMITED)
-    )
+    private val inputChannel: Channel<A> = Channel(Channel.UNLIMITED)
+    private val outputFlow: Flow<R> = inputChannel.receiveAsFlow().asProcessingFlow(mviActionProcessor)
 
-    suspend fun accept(action: A) {
-        actionChannel.send(action)
-    }
+    suspend fun accept(action: A) = inputChannel.send(action)
+
+    fun resultsFlow(): Flow<R> = outputFlow
 }
+
 
 /**
  * Parallel Flow Builder

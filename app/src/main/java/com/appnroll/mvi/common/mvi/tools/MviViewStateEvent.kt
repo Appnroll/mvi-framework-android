@@ -1,4 +1,4 @@
-package com.appnroll.mvi.common.mvi.utils
+package com.appnroll.mvi.common.mvi.tools
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

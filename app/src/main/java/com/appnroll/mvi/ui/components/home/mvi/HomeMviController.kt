@@ -2,9 +2,9 @@ package com.appnroll.mvi.ui.components.home.mvi
 
 import androidx.lifecycle.SavedStateHandle
 import com.appnroll.mvi.common.mvi.MviController
-import com.appnroll.mvi.common.mvi.utils.MviViewStateCacheImpl
-import com.appnroll.mvi.common.mvi.processing.MviActionProcessingFlow
-import com.appnroll.mvi.common.mvi.processing.MviResultProcessingFlow
+import com.appnroll.mvi.common.mvi.tools.MviViewStateCacheImpl
+import com.appnroll.mvi.common.mvi.processing.MviActionProcessing
+import com.appnroll.mvi.common.mvi.processing.MviResultProcessing
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeActionProcessor
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult
@@ -40,27 +40,27 @@ import kotlinx.coroutines.CoroutineScope
  */
 
 class HomeMviController(
-    homeActionProcessingFlow: HomeActionProcessingFlow,
-    homeResultProcessingFlow: HomeResultProcessingFlow,
+    homeActionProcessing: HomeActionProcessing,
+    homeResultProcessing: HomeResultProcessing,
     homeViewStateCache: HomeViewStateCache,
     coroutineScope: CoroutineScope
 ) : MviController<HomeAction, HomeResult, HomeViewState>(
-    mviActionProcessingFlow = homeActionProcessingFlow,
-    mviResultProcessingFlow = homeResultProcessingFlow,
+    mviActionProcessing = homeActionProcessing,
+    mviResultProcessing = homeResultProcessing,
     mviViewStateCache = homeViewStateCache,
     coroutineScope = coroutineScope
 )
 
-class HomeActionProcessingFlow(
+class HomeActionProcessing(
     homeActionProcessor: HomeActionProcessor
-) : MviActionProcessingFlow<HomeAction, HomeResult>(
+) : MviActionProcessing<HomeAction, HomeResult>(
     mviActionProcessor = homeActionProcessor
 )
 
-class HomeResultProcessingFlow(
+class HomeResultProcessing(
     homeResultReducer: HomeResultReducer,
     homeViewStateCache: HomeViewStateCache
-) : MviResultProcessingFlow<HomeResult, HomeViewState>(
+) : MviResultProcessing<HomeResult, HomeViewState>(
     mviViewStateCache = homeViewStateCache,
     mviResultReducer = homeResultReducer
 )

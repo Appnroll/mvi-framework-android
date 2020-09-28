@@ -1,8 +1,8 @@
 package com.appnroll.mvi.ui.components.home.mvi.impl
 
 import com.appnroll.mvi.common.mvi.api.MviViewState
-import com.appnroll.mvi.common.mvi.utils.ViewStateEmptyEvent
-import com.appnroll.mvi.common.mvi.utils.ViewStateErrorEvent
+import com.appnroll.mvi.common.mvi.tools.ViewStateEmptyEvent
+import com.appnroll.mvi.common.mvi.tools.ViewStateErrorEvent
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction.AddTaskAction
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction.DeleteCompletedTasksAction
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction.LoadTasksAction

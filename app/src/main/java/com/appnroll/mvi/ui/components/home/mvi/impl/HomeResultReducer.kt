@@ -1,8 +1,8 @@
 package com.appnroll.mvi.ui.components.home.mvi.impl
 
 import com.appnroll.mvi.common.mvi.api.MviResultReducer
-import com.appnroll.mvi.common.mvi.utils.ViewStateEmptyEvent
-import com.appnroll.mvi.common.mvi.utils.ViewStateErrorEvent
+import com.appnroll.mvi.common.mvi.tools.ViewStateEmptyEvent
+import com.appnroll.mvi.common.mvi.tools.ViewStateErrorEvent
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult.AddTaskResult
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult.DeleteCompletedTasksResult
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult.ErrorResult

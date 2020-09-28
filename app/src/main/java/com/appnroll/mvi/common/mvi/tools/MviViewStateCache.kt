@@ -1,4 +1,4 @@
-package com.appnroll.mvi.common.mvi.utils
+package com.appnroll.mvi.common.mvi.tools
 
 import androidx.lifecycle.SavedStateHandle
 import com.appnroll.mvi.common.mvi.api.MviViewState
