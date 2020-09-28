@@ -2,9 +2,7 @@ package com.appnroll.mvi.common.mvi.processing
 
 import com.appnroll.mvi.common.mvi.api.MviAction
 import com.appnroll.mvi.common.mvi.api.MviActionProcessor
-import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction
-import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResult
-import com.appnroll.mvi.ui.components.home.mvi.impl.HomeResultReducer
+import com.appnroll.mvi.common.mvi.api.MviResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -12,16 +10,13 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlin.reflect.KClass
-import kotlin.reflect.typeOf
 
 /*
 * Logic Controller
 * */
-open class MviActionProcessing<A : MviAction, R>(
+open class MviActionProcessing<A : MviAction, R : MviResult>(
     mviActionProcessor: MviActionProcessor<A, R>
 ) {
     private val input: Channel<A> = Channel(Channel.UNLIMITED)
@@ -37,7 +32,7 @@ open class MviActionProcessing<A : MviAction, R>(
  * add description
  * */
 @Suppress("EXPERIMENTAL_API_USAGE")
-class ProcessingFlow<A : MviAction, R>(
+class ProcessingFlow<A : MviAction, R : MviResult>(
     channel: ReceiveChannel<A>,
     producer: (A) -> Flow<R>,
     shouldRestart: Boolean = true
@@ -45,13 +40,7 @@ class ProcessingFlow<A : MviAction, R>(
     block = {
         val internalJobs: HashMap<Any, Job> = hashMapOf()
         channel.receiveAsFlow().collect { action: A ->
-            /*
-             TODO:
-              Currently only one action of the current type could be processed at once.
-              Think how we could process more then one action of the same type at once,
-              but in a way that we will have full control of the uniqueness af an action
-             */
-            val currentJob = internalJobs[action::class]
+            val currentJob = internalJobs[action.getId()]
             val shouldStart =
                 shouldRestart || currentJob == null || currentJob.isCompleted
             if (shouldRestart) {
@@ -61,7 +50,7 @@ class ProcessingFlow<A : MviAction, R>(
             if (shouldStart) {
                 val newJob = launch(Dispatchers.Default) { producer(action).collect(::send) }
                 println("starting job for action: $action, job: $newJob")
-                internalJobs[action::class] = newJob
+                internalJobs[action.getId()] = newJob
             }
         }
     })

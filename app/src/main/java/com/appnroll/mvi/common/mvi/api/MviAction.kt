@@ -10,4 +10,7 @@ package com.appnroll.mvi.common.mvi.api
 /*
 * Logic base definitions
 * */
-interface MviAction
+interface MviAction {
+
+    fun getId(): Any = this.javaClass.simpleName
+}

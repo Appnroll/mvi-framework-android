@@ -11,7 +11,9 @@ sealed class HomeAction : MviAction {
 
     data class AddTaskAction(val taskContent: String) : HomeAction()
 
-    data class UpdateTaskAction(val taskId: Long, val isDone: Boolean) : HomeAction()
+    data class UpdateTaskAction(val taskId: Long, val isDone: Boolean) : HomeAction() {
+        override fun getId() = super.getId().toString() + taskId
+    }
 
     object DeleteCompletedTasksAction : HomeAction()
 }
