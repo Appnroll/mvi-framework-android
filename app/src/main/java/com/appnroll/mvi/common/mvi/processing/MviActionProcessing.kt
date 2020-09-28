@@ -13,9 +13,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-/*
-* Logic Controller
-* */
 open class MviActionProcessing<A : MviAction, R : MviResult>(
     mviActionProcessor: MviActionProcessor<A, R>
 ) {
@@ -35,7 +32,7 @@ open class MviActionProcessing<A : MviAction, R : MviResult>(
 class ProcessingFlow<A : MviAction, R : MviResult>(
     channel: ReceiveChannel<A>,
     producer: (A) -> Flow<R>,
-    shouldRestart: Boolean = true
+    shouldRestart: Boolean = true // currently not used - always true
 ) : Flow<R> by channelFlow(
     block = {
         val internalJobs: HashMap<Any, Job> = hashMapOf()
