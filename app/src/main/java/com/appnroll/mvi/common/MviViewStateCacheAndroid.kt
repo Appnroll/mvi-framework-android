@@ -1,16 +1,10 @@
-package com.appnroll.mvi.common.mvi.tools
+package com.appnroll.mvi.common
 
 import androidx.lifecycle.SavedStateHandle
 import com.appnroll.mvi.common.mvi.api.MviViewState
+import com.appnroll.mvi.common.mvi.api.MviViewStateCache
 
-interface MviViewStateCache<VS : MviViewState> {
-
-    fun get(): VS?
-
-    fun set(viewState: VS)
-}
-
-open class MviViewStateCacheImpl<VS : MviViewState>(
+open class MviViewStateCacheAndroid<VS : MviViewState>(
     private val key: String,
     private val savedStateHandle: SavedStateHandle
 ) : MviViewStateCache<VS> {

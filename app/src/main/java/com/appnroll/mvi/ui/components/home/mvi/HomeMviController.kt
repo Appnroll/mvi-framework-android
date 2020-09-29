@@ -2,7 +2,7 @@ package com.appnroll.mvi.ui.components.home.mvi
 
 import androidx.lifecycle.SavedStateHandle
 import com.appnroll.mvi.common.mvi.MviController
-import com.appnroll.mvi.common.mvi.tools.MviViewStateCacheImpl
+import com.appnroll.mvi.common.MviViewStateCacheAndroid
 import com.appnroll.mvi.common.mvi.processing.MviActionProcessing
 import com.appnroll.mvi.common.mvi.processing.MviResultProcessing
 import com.appnroll.mvi.ui.components.home.mvi.impl.HomeAction
@@ -67,7 +67,7 @@ class HomeResultProcessing(
 
 class HomeViewStateCache(
     savedStateHandle: SavedStateHandle
-) : MviViewStateCacheImpl<HomeViewState>(
+) : MviViewStateCacheAndroid<HomeViewState>(
     key = "HomeViewStateKey",
     savedStateHandle = savedStateHandle
 )

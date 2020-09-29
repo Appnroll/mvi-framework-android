@@ -1,6 +1,6 @@
 package com.appnroll.mvi.common.mvi
 
-import com.appnroll.mvi.common.mvi.tools.MviViewStateCache
+import com.appnroll.mvi.common.mvi.api.MviViewStateCache
 import com.appnroll.mvi.common.mvi.api.MviAction
 import com.appnroll.mvi.common.mvi.processing.MviActionProcessing
 import com.appnroll.mvi.common.mvi.api.MviResult

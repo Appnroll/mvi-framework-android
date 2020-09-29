@@ -2,7 +2,7 @@ package com.appnroll.mvi.common.mvi.processing
 
 import com.appnroll.mvi.common.mvi.api.MviResult
 import com.appnroll.mvi.common.mvi.api.MviResultReducer
-import com.appnroll.mvi.common.mvi.tools.MviViewStateCache
+import com.appnroll.mvi.common.mvi.api.MviViewStateCache
 import com.appnroll.mvi.common.mvi.api.MviViewState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
