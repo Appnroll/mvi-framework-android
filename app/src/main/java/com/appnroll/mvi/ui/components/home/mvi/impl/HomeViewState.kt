@@ -18,9 +18,10 @@ data class HomeViewState(
     val inProgress: Boolean,
     val tasks: List<Task>?,
     val newTaskAdded: ViewStateEmptyEvent?,
-    val error: ViewStateErrorEvent?,
-    override val isSavable: Boolean = !inProgress
+    val error: ViewStateErrorEvent?
 ) : MviViewState {
+
+    override fun isSavable(): Boolean = !inProgress
 
     fun loadDataIfNeeded(): HomeAction? {
         return if (tasks == null) LoadTasksAction else null

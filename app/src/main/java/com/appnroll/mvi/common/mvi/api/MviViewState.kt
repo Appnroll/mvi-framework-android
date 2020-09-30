@@ -6,5 +6,5 @@ import android.os.Parcelable
  * Representation of an UI state
  */
 interface MviViewState : Parcelable {
-    val isSavable: Boolean
+    fun isSavable(): Boolean
 }
