@@ -22,6 +22,8 @@ data class HomeViewState(
 ) : MviViewState {
     override val isSavable: Boolean get() = !inProgress
 
+    override fun isSavable(): Boolean = !inProgress
+
     fun loadDataIfNeeded(): HomeAction? {
         return if (tasks == null) LoadTasksAction else null
     }

@@ -30,8 +30,8 @@ open class MviResultProcessing<R : MviResult, VS : MviViewState>(
 ) {
     private val output = MutableStateFlow(value = mviViewStateCache.get() ?: mviResultReducer.default())
 
-    val savableOutput = output
-        .filter { it.isSavable }
+    private val savableOutput = output
+        .filter { it.isSavable() }
         .mapNotNull { mviResultReducer.fold(it) }
         .onEach { mviViewStateCache.set(it) }
 
