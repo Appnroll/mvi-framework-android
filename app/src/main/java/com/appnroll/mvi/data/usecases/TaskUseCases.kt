@@ -6,17 +6,16 @@ import com.appnroll.mvi.common.SuspendableUseCase0
 import com.appnroll.mvi.common.SuspendableUseCase1
 import com.appnroll.mvi.common.SuspendableUseCase1n
 import com.appnroll.mvi.data.room.dao.TaskDao
-import com.appnroll.mvi.ui.model.Task
-import com.appnroll.mvi.ui.model.toTask
-import com.appnroll.mvi.ui.model.toTaskEntity
+import com.appnroll.mvi.model.Task
+import com.appnroll.mvi.model.toTask
+import com.appnroll.mvi.model.toTaskEntity
 
-
-interface AddTaskUseCase: SuspendableUseCase1<Task, Task>
-interface GetTaskUseCase: SuspendableUseCase1<Long, Task?>
-interface GetAllTasksUseCase: SuspendableUseCase0<List<Task>>
-interface GetAllDoneTasksUseCase: SuspendableUseCase0<List<Task>>
-interface UpdateTaskUseCase: SuspendableUseCase1n<Task>
-interface DeleteTasksUseCase: SuspendableUseCase1n<List<Task>>
+interface AddTaskUseCase : SuspendableUseCase1<Task, Task>
+interface GetTaskUseCase : SuspendableUseCase1<Long, Task?>
+interface GetAllTasksUseCase : SuspendableUseCase0<List<Task>>
+interface GetAllDoneTasksUseCase : SuspendableUseCase0<List<Task>>
+interface UpdateTaskUseCase : SuspendableUseCase1n<Task>
+interface DeleteTasksUseCase : SuspendableUseCase1n<List<Task>>
 
 class AddTaskUseCaseImpl(
     private val taskDao: TaskDao
@@ -30,7 +29,7 @@ class AddTaskUseCaseImpl(
 
 class GetTaskUseCaseImpl(
     private val taskDao: TaskDao
-): GetTaskUseCase {
+) : GetTaskUseCase {
 
     override suspend fun invoke(taskId: Long): Task? {
         return taskDao
@@ -42,7 +41,7 @@ class GetTaskUseCaseImpl(
 
 class GetAllTasksUseCaseImpl(
     private val taskDao: TaskDao
-): GetAllTasksUseCase {
+) : GetAllTasksUseCase {
 
     override suspend fun invoke(): List<Task> {
         return taskDao
@@ -53,7 +52,7 @@ class GetAllTasksUseCaseImpl(
 
 class GetAllDoneTasksUseCaseImpl(
     private val taskDao: TaskDao
-): GetAllDoneTasksUseCase {
+) : GetAllDoneTasksUseCase {
 
     override suspend fun invoke(): List<Task> {
         return taskDao
@@ -64,7 +63,7 @@ class GetAllDoneTasksUseCaseImpl(
 
 class UpdateTaskUseCaseImpl(
     private val taskDao: TaskDao
-): UpdateTaskUseCase {
+) : UpdateTaskUseCase {
 
     override suspend fun invoke(task: Task) {
         taskDao.update(task.toTaskEntity())
@@ -73,7 +72,7 @@ class UpdateTaskUseCaseImpl(
 
 class DeleteTasksUseCaseImpl(
     private val taskDao: TaskDao
-): DeleteTasksUseCase {
+) : DeleteTasksUseCase {
 
     override suspend fun invoke(tasks: List<Task>) {
         taskDao

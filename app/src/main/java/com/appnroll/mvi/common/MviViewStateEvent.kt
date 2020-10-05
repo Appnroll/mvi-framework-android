@@ -1,15 +1,9 @@
-package com.appnroll.mvi.ui.base.mvi
+package com.appnroll.mvi.common
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
 import java.util.concurrent.atomic.AtomicBoolean
-
-
-/**
- * TODO: this probably could be cleaned up
- *
- * */
 
 @Parcelize
 data class ViewStateEvent<T : Parcelable>(
@@ -20,7 +14,6 @@ data class ViewStateEvent<T : Parcelable>(
     override fun equals(other: Any?) = super.equals(other)
     override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
-
 
 /**
  * ViewState event generic class for a simple types like String, Int, Float, Double etc.
@@ -35,15 +28,13 @@ data class ViewStateSimpleTypeEvent<T : Any>(
     override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
 
-
 data class ViewStateNonParcelableEvent<T>(
     val payload: T
-): SingleEvent<T>(payload) {
+) : SingleEvent<T>(payload) {
 
     override fun equals(other: Any?) = super.equals(other)
     override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
-
 
 @Parcelize
 data class ViewStateErrorEvent(
@@ -55,7 +46,6 @@ data class ViewStateErrorEvent(
     override fun hashCode() = 31 * payload.hashCode() + isConsumed.hashCode()
 }
 
-
 @Parcelize
 class ViewStateEmptyEvent(
     override val isConsumed: AtomicBoolean = AtomicBoolean(false)
@@ -64,7 +54,6 @@ class ViewStateEmptyEvent(
     override fun equals(other: Any?) = super.equals(other)
     override fun hashCode() = isConsumed.hashCode()
 }
-
 
 abstract class SingleEvent<T>(
     private val argument: T,

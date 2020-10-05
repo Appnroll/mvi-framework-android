@@ -1,4 +1,4 @@
-package com.appnroll.mvi.ui.model
+package com.appnroll.mvi.model
 
 import android.os.Parcelable
 import com.appnroll.mvi.data.room.entities.TaskEntity
@@ -9,7 +9,7 @@ data class Task(
     val id: Long,
     val content: String,
     val isDone: Boolean
-): Parcelable
+) : Parcelable
 
 fun Task.toTaskEntity() = TaskEntity(
     id,

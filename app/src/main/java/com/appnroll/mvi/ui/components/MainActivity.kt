@@ -7,7 +7,7 @@ import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.appnroll.mvi.R
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity: AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     lateinit var navController: NavController
 
