@@ -53,7 +53,6 @@ inline val Module.HomeModule
             HomeMviController(
                 homeActionProcessing = get(),
                 homeResultProcessing = get { parametersOf(savedStateHandle) },
-                homeViewStateCache = get { parametersOf(savedStateHandle) },
                 coroutineScope = coroutineScope
             )
         }

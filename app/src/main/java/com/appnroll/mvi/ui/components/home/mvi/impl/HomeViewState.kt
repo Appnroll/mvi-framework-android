@@ -20,7 +20,6 @@ data class HomeViewState(
     val newTaskAdded: ViewStateEmptyEvent?,
     val error: ViewStateErrorEvent?
 ) : MviViewState {
-    override val isSavable: Boolean get() = !inProgress
 
     override fun isSavable(): Boolean = !inProgress
 
