@@ -1,6 +1,5 @@
 package com.appnroll.mvi.common.mvi
 
-import com.appnroll.mvi.common.mvi.api.MviViewStateCache
 import com.appnroll.mvi.common.mvi.api.MviAction
 import com.appnroll.mvi.common.mvi.processing.MviActionProcessing
 import com.appnroll.mvi.common.mvi.api.MviResult
@@ -20,25 +19,21 @@ import kotlinx.coroutines.launch
  *
  * @param mviActionProcessing
  * @param mviResultProcessing
- * @param mviViewStateCache
  * @param coroutineScope
  */
 open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
     private val mviActionProcessing: MviActionProcessing<A, R>,
     private val mviResultProcessing: MviResultProcessing<R, VS>,
-    private val mviViewStateCache: MviViewStateCache<VS>,
     private val coroutineScope: CoroutineScope
 ) {
     val viewStatesFlow: Flow<VS> = mviResultProcessing.viewStatesFlow
 
     init {
         mviActionProcessing.resultsFlow
-            .onEach { mviResultProcessing.accept(it) }
+            .onEach(mviResultProcessing::accept)
             .launchIn(coroutineScope)
 
-        mviResultProcessing.savableViewStatesFlow
-            .onEach { mviViewStateCache.set(it) }
-            .launchIn(coroutineScope)
+        mviResultProcessing.savableOutput.launchIn(coroutineScope)
     }
 
     fun accept(intent: VS.() -> A?) {

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
 
 /**
  * Wrapper around MviResultReducer.
@@ -29,12 +30,12 @@ open class MviResultProcessing<R : MviResult, VS : MviViewState>(
 ) {
     private val output = MutableStateFlow(value = mviViewStateCache.get() ?: mviResultReducer.default())
 
-    private val savableOutput = output
+    val savableOutput = output
         .filter { it.isSavable() }
         .mapNotNull { mviResultReducer.fold(it) }
+        .onEach { mviViewStateCache.set(it) }
 
     val viewStatesFlow: Flow<VS> = output
-    val savableViewStatesFlow: Flow<VS> = savableOutput
 
     fun accept(result: R) {
         output.value = with(mviResultReducer) { currentViewState().reduce(result) }

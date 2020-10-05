@@ -42,12 +42,10 @@ import kotlinx.coroutines.CoroutineScope
 class HomeMviController(
     homeActionProcessing: HomeActionProcessing,
     homeResultProcessing: HomeResultProcessing,
-    homeViewStateCache: HomeViewStateCache,
     coroutineScope: CoroutineScope
 ) : MviController<HomeAction, HomeResult, HomeViewState>(
     mviActionProcessing = homeActionProcessing,
     mviResultProcessing = homeResultProcessing,
-    mviViewStateCache = homeViewStateCache,
     coroutineScope = coroutineScope
 )
 
