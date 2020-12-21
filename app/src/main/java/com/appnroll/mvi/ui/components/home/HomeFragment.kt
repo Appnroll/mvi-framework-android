@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.observe
 import com.appnroll.mvi.R
-import com.appnroll.mvi.ui.components.home.mvi.impl.HomeViewState
+import com.appnroll.mvi.ui.components.home.mvi.HomeViewState
 import com.appnroll.mvi.ui.components.home.recyclerview.TasksAdapter
 import com.appnroll.mvi.utils.mviController
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -20,7 +20,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val tasksAdapter = TasksAdapter { taskId, isChecked ->
         /** send action to change tasks state (completed/not completed) */
-        homeMviController.accept { updateTask(taskId, isChecked) }
+        homeMviController.updateTask(taskId, isChecked)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,18 +37,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onStart() {
         super.onStart()
         /** send action to load tasks list if list is empty */
-        homeMviController.accept { loadDataIfNeeded() }
+        homeMviController.loadDataIfNeeded()
     }
 
     private fun initButtons() {
         addTaskButton.setOnClickListener {
             /** send action to add new task */
-            homeMviController.accept { addTask(newTaskInput.text.toString()) }
+            homeMviController.addTask(newTaskInput.text.toString())
         }
 
         deleteCompletedTasksButton.setOnClickListener {
             /** send action to delete all completed tasks */
-            homeMviController.accept { deleteCompletedTasks() }
+            homeMviController.deleteCompletedTasks()
         }
     }
 

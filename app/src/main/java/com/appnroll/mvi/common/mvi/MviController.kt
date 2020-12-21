@@ -1,8 +1,7 @@
 package com.appnroll.mvi.common.mvi
 
-import com.appnroll.mvi.common.mvi.api.MviAction
+import com.appnroll.mvi.common.mvi.api.MviActionProcessor
 import com.appnroll.mvi.common.mvi.processing.MviActionProcessing
-import com.appnroll.mvi.common.mvi.api.MviResult
 import com.appnroll.mvi.common.mvi.processing.MviResultProcessing
 import com.appnroll.mvi.common.mvi.api.MviViewState
 import kotlinx.coroutines.CoroutineScope
@@ -21,26 +20,28 @@ import kotlinx.coroutines.launch
  * @param mviResultProcessing
  * @param coroutineScope
  */
-open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
-    private val mviActionProcessing: MviActionProcessing<A, R>,
-    private val mviResultProcessing: MviResultProcessing<R, VS>,
+open class MviController<VS : MviViewState>(
+    private val mviActionProcessing: MviActionProcessing<VS>,
+    private val mviResultProcessing: MviResultProcessing<VS>,
     private val coroutineScope: CoroutineScope
 ) {
     val viewStatesFlow: Flow<VS> = mviResultProcessing.viewStatesFlow
 
     init {
         mviActionProcessing.resultsFlow
-            .onEach(mviResultProcessing::accept)
+            .onEach { mviResultProcessing.accept(it) }
             .launchIn(coroutineScope)
 
         mviResultProcessing.savableOutput.launchIn(coroutineScope)
     }
 
-    fun accept(intent: VS.() -> A?) {
+    protected fun currentViewState(): VS {
+        return mviResultProcessing.currentViewState()
+    }
+
+    fun accept(processor: MviActionProcessor<VS>) {
         coroutineScope.launch {
-            mviActionProcessing.accept(
-                action = intent(mviResultProcessing.currentViewState()) ?: return@launch
-            )
+            mviActionProcessing.accept(processor)
         }
     }
 }

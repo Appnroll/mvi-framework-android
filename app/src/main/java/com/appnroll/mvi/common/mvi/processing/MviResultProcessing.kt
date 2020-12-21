@@ -1,6 +1,5 @@
 package com.appnroll.mvi.common.mvi.processing
 
-import com.appnroll.mvi.common.mvi.api.MviResult
 import com.appnroll.mvi.common.mvi.api.MviResultReducer
 import com.appnroll.mvi.common.mvi.api.MviViewStateCache
 import com.appnroll.mvi.common.mvi.api.MviViewState
@@ -24,9 +23,9 @@ import kotlinx.coroutines.flow.onEach
  * and producing new MviViewState
  */
 @Suppress("EXPERIMENTAL_API_USAGE")
-open class MviResultProcessing<R : MviResult, VS : MviViewState>(
+open class MviResultProcessing<VS : MviViewState>(
     mviViewStateCache: MviViewStateCache<VS>,
-    private val mviResultReducer: MviResultReducer<R, VS>
+    private val mviResultReducer: MviResultReducer<VS>
 ) {
     private val output = MutableStateFlow(value = mviViewStateCache.get() ?: mviResultReducer.default())
 
@@ -37,8 +36,8 @@ open class MviResultProcessing<R : MviResult, VS : MviViewState>(
 
     val viewStatesFlow: Flow<VS> = output
 
-    fun accept(result: R) {
-        output.value = with(mviResultReducer) { currentViewState().reduce(result) }
+    fun accept(reducingFun: VS.() -> VS) {
+        output.value = with(mviResultReducer) { currentViewState().reduce(reducingFun) }
     }
 
     fun currentViewState(): VS = output.value

@@ -4,7 +4,6 @@ package com.appnroll.mvi
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.asLiveData
 import com.appnroll.mvi.TestAction.TestAction1
 import com.appnroll.mvi.TestAction.TestAction2
 import com.appnroll.mvi.TestResult.TestResult1
@@ -12,7 +11,6 @@ import com.appnroll.mvi.TestResult.TestResult2
 import com.appnroll.mvi.TestResult.TestResult3
 import com.appnroll.mvi.common.mvi.MviController
 import com.appnroll.mvi.common.mvi.api.MviAction
-import com.appnroll.mvi.common.mvi.api.MviResult
 import com.appnroll.mvi.common.mvi.api.mviProcessor
 import com.appnroll.mvi.common.mvi.modelControllerOf
 import com.appnroll.mvi.common.mvi.state.stateControllerOf

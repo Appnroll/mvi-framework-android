@@ -7,4 +7,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * By convention - each MviAction type should have its own MviActionProcessor.
  */
-interface MviActionProcessor<A : MviAction, R : MviResult> : (A) -> Flow<R>
+interface MviActionProcessor<VS : MviViewState> : () -> Flow<VS.() -> VS> {
+
+    fun getId(): Any = this::class
+}

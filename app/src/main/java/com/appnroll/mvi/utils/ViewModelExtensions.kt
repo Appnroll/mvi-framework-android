@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 /**
  * Instantiate ViewModel and provides MviController reference from this ViewModel
  */
-inline fun <reified VM : ViewModel, reified C : MviController<*, *, *>> SavedStateRegistryOwner.mviController(
+inline fun <reified VM : ViewModel, reified C : MviController<*>> SavedStateRegistryOwner.mviController(
     clazz: KClass<VM>,
     qualifier: Qualifier? = null,
     bundle: Bundle? = null,
